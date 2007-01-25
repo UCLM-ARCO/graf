@@ -1,0 +1,83 @@
+body { 
+	background: url("./images/logo_uclm.png");
+	background-position: top right;
+	background-repeat: no-repeat;
+	background-attachment: fixed; 
+	background-color:white;
+	color:black;
+	margin-top: 10px; 
+	margin-right: 20px; 
+	margin-bottom: 20px; 
+	margin-left: 20px; 
+	font-weight: normal;
+	font-size: 10pt;
+}
+
+
+H1 {
+	color: #000000;
+	font-family: helvetica,MS Sans Serif;
+	font-weight: bold;
+	font-size: 16pt;
+}
+
+H2 {
+	font-family: helvetica,MS Sans Serif;
+	font-weight: bold;
+	font-size: 20pt; 
+	text-decoration: none;
+}
+      
+a:link {
+	text-decoration: none;
+	color: #0000DD;
+} 
+      
+a:visited {
+	text-decoration: none;
+	color: #0000DD;
+} 
+      
+a:hover {
+	text-decoration: underline; 
+} 
+
+.question{
+	border-style: groove;
+	background-color: #CCFFFF;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.questionNumber {
+	font-weight: bold;
+	font-size: 12pt;
+}
+      
+.questionText {
+	font-weight: bold;
+}
+
+.grade {
+	color: navy;
+	font-weigth: bold;
+}
+      
+.optionNumber {
+	font-weight: bold;
+	font-size: 10pt;
+}
+
+.markAnswer {
+	background: #cccccc;
+}
+
+img{
+	border-style: solid;
+	border-width: 1px;
+}
+
+
+      

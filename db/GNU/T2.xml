@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE qset SYSTEM "question.dtd">
+
+<qset>
+  <question id=1>
+	<text>
+	  ¿Cuál es el nombre completo del jefe de policía de
+	  Springfield?
+	</text>
+	<option correct="no">Casey Wiggum</option>
+	<option correct="no">Eliott Ness</option>
+	<option correct="no">Charlie Wiggum</option>
+	<option correct="yes">Clamcy Wiggum</option>
+  </question>
+  
+  <question id=2>
+	<part>
+	  <text>
+		¿En cuántas ocasiones ha intentado el actor secundario Bob
+		acabar con Krusty?
+	  </text>
+	  <number units="veces" correct="3"/>
+	</part>
+
+	<part>
+	  <text>¿Y cuántas veces se ha enfrentado a Bart?</text>
+	  <number units="veces" correct="6"/>
+	</part>
+	
+  <question id=3>
+	<text>¿Cómo consiguieron los Simpson a su perro?</text>
+	<freetext rows="4" />
+  </question>
+
+  <question id=4>
+	<text>
+	  ¿Cuáles de estos animales han pertenecido a la familia
+	  Simpson?
+	</text>
+	<item correct="no">Loro</item>
+	<item correct="yes">Caballo</item>
+	<item correct="no">Canguro</item>
+	<item correct="yes">Pony</item>
+	<item correct="no">Lobo</item>
+	<item correct="yes">Gato</item>
+	<item correct="yes">Elefante</item>
+	<item correct="yes">Langosta</item>
+  </question>
+
+  <question id=5>
+	<text>
+	  Homer <complete cols="3" correct="J."/> Simpson vive en
+	  Springfield, en el <complete cols="5" correct="742"/> de
+	  Evergreen Terrace. Tiene <complete cols="3" correct="3"/> hijos:
+	  Bart, de <complete cols="3" correct="10"/> años; Lisa, de
+	  <complete cols="3" correct="8"/>, y <complete cols="10"
+	  correct="Maggie"/>, de edad indeterminada.
+	</text>
+  </question>
+</qset>

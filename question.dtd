@@ -1,0 +1,53 @@
+<!-- DTD para la base de datos de preguntas  Ignacio Díez Arias -->
+
+<!-- Un tema tiene una o mas preguntas (question) -->
+<!ELEMENT qset (question+)>
+
+
+<!-- una pregunta. Dentro puede contener un enunciado (text) o varias -->
+<!-- partes (part). Después van los diferentes tipos de respuesta.-->
+<!ELEMENT question (text?,part*,option*,freetext?,number?,item*)>
+<!ATTLIST question id ID #REQUIRED>
+ 
+
+<!-- enunciado de la pregunta -->
+<!ELEMENT text (#PCDATA,complete*)>
+
+
+<!-- opcion para preguntas de tipo test -->
+<!ELEMENT option (freetext?,#PCDATA?)>
+<!ATTLIST option correct (yes|no) "no">
+
+
+<!-- para preguntas de respuesta libre -->
+<!ELEMENT freetext (#PCDATA,correct)>
+<!ATTLIST freetext
+          rows CDATA ""
+          readonly (yes|no) "yes">
+
+<!-- respuesta correcta del freetext -->
+<!ELEMENT correct (#PCDATA)>
+
+
+<!-- para respuestas únicas (un número, una palabra...) -->
+<!ELEMENT number (#PCDATA)>
+<!ATTLIST number
+          unit CDATA ""
+          correct CDATA #REQUIRED>
+
+
+<!-- para respuestas de elegir varias -->
+<!ELEMENT item (freetext?,#PCDATA?)>
+<!ATTLIST item correct (yes|no) "no">
+
+<!-- para respuestas de rellena los espacios -->
+<!ELEMENT complete (#PCDATA?)>
+<!ATTLIST complete
+            cols CDATA #REQUIRED
+            correct CDATA #REQUIRED>
+
+
+<!-- para preguntas con varias partes -->
+<!ELEMENT part (text,option*,freetext?,number?,item*)>
+
+

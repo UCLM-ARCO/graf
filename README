@@ -1,0 +1,50 @@
+
+
+Los ficheros de examen deben tener extensión .exam.xml y se guardan en
+el mismo directorio que los conjuntos de preguntas.
+
+== Atributos de exam ==
+- title        Título 
+- from         Fecha, formato: "20050704"
+- show_points  Se muestra el valor de las preguntas [YES/no]
+
+
+=== Elementos específicos del examen ==
+- exam
+- part
+- question
+- instructions
+- identification
+
+
+=== Conjunto de preguntas ==
+- qset        Un conjunto de <question>
+- question    Un enunciado con su respuesta
+- part        Un apartado de la pregunta
+- text        Texto (enunciado o respuesta)
+- exam        Un examen
+
+
+=== Tipos de preguntas ==
+- option      Elección exclusiva
+- item        Elección múltiple ó verdadero/falso
+- number      Un valor numérico
+  - size
+  - unit
+- freetext    Respuesta libre
+  - rows
+
+
+
+
+-- Elementos estructurales del texto --
+
+En la redacción de los textos (<text>) se utilizarán elementos XML
+completamente orientados al contenido, nunca al formato. Se imitará en
+lo posible DocBook pero intentado simplificar las marcas, así pues la
+marca <para> de DocBook se remplaza por <p>
+
+Las marcas existentes hasta el momento son:
+- p:    parrafo
+- ul:   (unordered list) lista de elementos no enumerados
+- li:   (list item) elemento de la lista

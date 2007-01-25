@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<exam title="Sesión 1" from="20031202">
+  
+  <instructions>
+    Este examen consta de <numquestions/> ejercicios con un total de
+    <numpoints/> puntos.
+  </instructions>
+
+  <identification/>
+
+  <question topic="T1" id="1" grade="0"/>
+  <question topic="T1" id="2" grade="1"/>
+  <question topic="T1" id="3" grade="1"/>
+  <question topic="T1" id="4" grade="1"/>
+  <question topic="T1" id="5" grade="1"/>
+  <question topic="T1" id="6" grade="1"/>
+
+</exam>

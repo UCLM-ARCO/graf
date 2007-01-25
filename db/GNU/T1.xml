@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<qset>
+
+  <question id="1">
+    <text>¿Qué Makefile es genera a.out a partir de a.c?</text>
+    <option>
+      <code>
+	all:
+	     $(CC) a.out
+      </code>
+    </option>
+    <option>
+      <code>
+	%.out: %.o
+	%.o: %.c
+      </code>
+    </option>
+    <option>
+      <code>
+	a.c: a.out
+      </code>
+    </option>
+  </question>
+
+  <question id="2"> 
+    <text>¿Qué es la depuración?</text>
+    <freetext rows="3"/>
+  </question>    
+
+  <question id="3">
+    <text>Marca la afirmación correcta:</text>
+    <option>
+      Un ejecutable con información de depuración es más rápido.
+    </option>
+    <option>
+      Un programa que use librerías dinámicas no puede contener
+      información de depuración.
+    </option>
+    <option>
+      Las librerías siempre deben contener información de depuración.
+    </option>
+    <option correct="yes">
+      La información de depuración se puede eliminar después de la
+      compilación y el enlazado
+    </option>
+  </question>
+
+  <question id="4">
+    <text>¿Cuántas iteraciones se ejecutan?</text>
+    <number size="5" unit="iteraciones" correct="4"/>
+  </question>
+
+  <question id="5">
+    <part>
+      <text>¿Cuántos ciclos se necesitan para ejecutar la primera iteración?</text>
+      <number size="5" unit="ciclos"/> 
+    </part>
+    <part>
+      <text>¿Y la segunda?</text> 
+      <number size="5" unit="ciclos"/>
+    </part>
+  </question>
+
+
+  <question id="6">
+    <part>
+      <text>¿Qué editor prefieres?</text>
+      <option>emacs</option>
+      <option>vi</option>
+      <option>otro. Indicar:
+	<freetext rows="2"/>
+      </option>
+    </part>
+    <part>
+      <text>¿Por qué motivo?</text>
+      <freetext rows="4"/>
+    </part>
+  </question>
+
+  <question id="7">
+    <text>
+      ¿Qué herramientas necesitas para hacer el estudio de cubrimiento
+      de un programa? (Marca con un X).
+    </text>
+    <item>gcc</item>
+    <item>gdb</item>
+    <item>make</item>
+    <item>gprof</item>
+    <item>strace</item>
+    <item>gcov</item>
+    <item>otras:
+      <freetext rows="4"/>
+    </item>
+  </question> 
+
+</qset>
+
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<exam title="Examen sobre Los Simpson" from="20040303">
+  
+  <instructions>
+    Este examen consta de <numquestions/> ejercicios con un total de
+    <numpoints/> puntos.
+  </instructions>
+
+  <identification/>
+
+  <question topic="simpson" id="1" grade="1"/>
+  <question topic="simpson" id="6" grade="2"/>
+  <question topic="simpson" id="4" grade="1"/>
+  <question topic="simpson" id="5" grade="2"/>
+  <question topic="simpson" id="3" grade="2"/>
+
+</exam>
+
+
+

@@ -1,0 +1,98 @@
+ifndef LATEX
+LATEX=latex
+endif
+
+ifndef PDFLATEX
+PDFLATEX=pdflatex
+endif
+
+ifndef BIBTEX
+BIBTEX=bibtex
+endif
+
+ifndef MPOST
+MPOST=mpost
+endif
+
+ifndef EPS2PDF
+EPS2PDF=epstopdf --filter
+endif
+
+ifndef FIG2DEV
+FIG2DEV=fig2dev
+endif
+
+ifndef PSTOPS
+PSTOPS=pstops
+endif
+
+ifndef FIGDIR
+FIGDIR=/usr/local/share/pic
+endif
+
+ifndef MKEXAM
+MKEXAM = mkexam
+endif
+
+vpath %.mp  $(FIGDIR)
+vpath %.fig $(FIGDIR)
+vpath %.xpm $(FIGDIR)
+vpath %.png $(FIGDIR)
+
+%.aux: %.ltx
+	TEXINPUTS="$(TEXINPUTS)" $(PDFLATEX) $<
+
+%.bbl: %.aux
+	BIBINPUTS="$(BIBINPUTS)" $(BIBTEX) `basename $< .aux`
+
+%.pdf: %.ltx %.bbl
+	TEXINPUTS="$(TEXINPUTS)" $(PDFLATEX) $< | tee $<.log ; \
+	while grep "^LaTeX Warning: .*Rerun " $<.log ; do \
+	  TEXINPUTS="$(TEXINPUTS)" $(PDFLATEX) $< | tee $<.log; \
+	done
+
+%.ps: %.pdf
+	acroread -toPostScript -fast -level2 -printerhalftones \
+	   -scale 100 -size a4 -landscape $< > $@
+
+%.mps: %.mp
+	$(MPOST) $<
+	@if [ ! -f $*.1 ]; then \
+	    echo "make: *** $@ does not contain figure 1." 1>&2; \
+	else \
+	    mv -f $*.1 $@ ; \
+	fi
+
+%.eps: %.fig
+	$(FIG2DEV) -L eps $< $@
+
+%.pdf: %.eps
+	$(EPS2PDF) < $< > $@
+
+%.pdf: %.mps
+	$(EPS2PDF) < $< > $@
+
+%_mini.ps: %.ps
+	pstops -pa4 -d '2:0@.6R(2cm,28cm)+1@.6R(2cm,14cm)' $< > $@
+
+%.eps: %.png
+	pngtopnm $< | pnmtops -noturn > $@
+
+%.ltx: %.exam
+	$(MKEXAM) $< >$@
+
+clean::
+	$(RM) *~
+	$(RM) *.dvi
+	$(RM) *.aux *.log
+	$(RM) *.bbl *.blg
+	$(RM) *.toc *.lot *.lof
+	$(RM) *.1
+
+vclean:
+
+.PRECIOUS: %.aux %.log %.bbl %.blg %.dvi
+
+# Local variables:
+#  mode: makefile
+# End:

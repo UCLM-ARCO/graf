@@ -1,0 +1,34 @@
+
+* meter la template parsedate en una XSL de utilidades
+
+* Salida Latex:
+   - Márgenes de la página
+   - Acortar espacio después de listas, itemizes y enumerates
+   [OK] incluir las letras UCLM oficiales de fondo y el nombre en la cabecera
+   - utilizar lstlisting para los listados de código, también con inputlisting
+
+
+* latex_view tiene la ruta de las imágenes "a pelo"
+
+* Intentar compilar los .ltx con rubber.
+
+* Buscar una fuente monoespacio para las opciones "(a) (b)..."
+
+* Hacer cuestiones de tipo test: completamente de
+   acuerdo... completamente en desacuerdo
+
+* respuesta tipo "number" pero pegado a la pregunta
+
+
+* Debería aplicar "multicol" cuando todas las respuestas tienen longitud
+   corta, no debería decirse como atributo en los qset, pues es una
+   cuestión de formato.
+
+* A parte del modo normal y el de soluciones incluir un modo 'debug' o
+   'draft' en el que se muestren los ID y tema de cada pregunta en el
+   resultado final.
+
+* Convertir a LaTeX los caracteres problemáticos como _, \, %, etc
+
+* añadir un modo 'debug' a 'mkexam' para que imprima los identificadores de las
+   preguntas junto al enunciado
