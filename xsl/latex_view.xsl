@@ -120,6 +120,9 @@
       \end{tabular}}}
   \end{picture}}}
 
+% Eliminar la marca de agua del escudo
+\renewcommand{\UCLMbglogo}{}
+
 
 
       \newcommand{\headframe}{%
