@@ -79,7 +79,7 @@
 
       \geometry{margin=1.8cm,top=2.5cm,bottom=2.5cm}
 
-      \graphicspath{{/home/dvilla/proy/graf/images/} {images/} {./}}
+      \graphicspath{{/home/david/repos/graf/images/} {images/} {./}}
 
 		
       \definecolor{uclm}{cmyk}{0.2,1,0.6,0.5}
@@ -92,10 +92,7 @@
 
 \newcommand{\UCLMlogo}[1][height=1.3cm]{\UCLMcolor{\includegraphics[#1]{uclm.pdf}}}
 
-%\newcommand{\UCLM}{\poppy{UCLM}}
 \newcommand{\UCLM}{{UCLM}}
-%\newcommand{\UCLMname}{\poppy{UNIVERSITY OF CASTILLA-LA MANCHA}}
-%\newcommand{\UCLMname}{{UNIVERSIDAD DE CASTILLA-LA MANCHA}}
 \newcommand{\UCLMname}{{\includegraphics[width=.4\textwidth]{uclmtext.pdf}}}
 
 \newcommand{\CSname}{\textbf{\textsf{Departamento de Imformática}}}
