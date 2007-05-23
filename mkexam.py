@@ -8,7 +8,7 @@ import urllib
 from types import *
 
 
-ROOT='/home/dvilla/proy/graf'
+ROOT='/home/david/repos/graf'
 
 #rootdir = os.path.join(os.getcwd(),'db')
 
