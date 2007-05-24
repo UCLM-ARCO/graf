@@ -88,9 +88,9 @@
       \definecolor{arco-light}{cmyk}{0.1,0,0,0}
       
       \newcommand{\UCLMcolor}[1]{\textcolor{uclm}{#1}}
-      \newcommand{\UCLMbgcolor}[1]{\textcolor{uclm-light}{#1}}
+      \newcommand{\UCLMbgcolor}[1]{\color{uclm-light}--->#1}
 
-\newcommand{\UCLMlogo}[1][height=1.3cm]{\UCLMcolor{\includegraphics[#1]{uclm.pdf}}}
+      \newcommand{\UCLMlogo}[1][height=1.3cm]{\UCLMcolor{\includegraphics[#1]{uclm.pdf}}}
 
 \newcommand{\UCLM}{{UCLM}}
 \newcommand{\UCLMname}{{\includegraphics[width=.4\textwidth]{uclmtext.pdf}}}
