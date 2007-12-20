@@ -32,3 +32,9 @@
 
 * añadir un modo 'debug' a 'mkexam' para que imprima los identificadores de las
    preguntas junto al enunciado
+
+
+IMPORTANTE
+----------
+
+- Informar de que no existe ninguna pregunta con un identificador dado
