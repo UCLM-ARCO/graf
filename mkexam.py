@@ -1,4 +1,4 @@
-#!/usr/bin/python2.4
+#!/usr/bin/python
 # -*- coding: iso-8859-1 -*-
 
 import os, sys
@@ -32,7 +32,7 @@ def generate_exam(examFname, sate_info, exam_part, solution):
 #    params['setcourse'] = '"' + course + '"'
 #    params['setexam'] = '"' + exam + '"'
     params['part'] = '"%d"' % exam_part
-    
+
     if solution: params['solution'] = '"1"'
 
 
@@ -42,18 +42,18 @@ def generate_exam(examFname, sate_info, exam_part, solution):
         print >>sys.stderr, "ERROR: Al parsear el fichero '%s'" % (path)
         os.system('rxp -xs ' + path)
         sys.exit(2)
-    
+
     result = style.applyStylesheet(doc, params)
     #dir(style)
 
     xmldoc = style.saveResultToString(result)
 
     print xmldoc
-    
+
     style.freeStylesheet()
     doc.freeDoc()
     result.freeDoc()
-    
+
     #FIXME: comprobar que la transformación fue correcta y generó el
     #fichero 'target'
 
@@ -69,11 +69,11 @@ def generate_latex_view(cad):
     xmldoc = style.applyStylesheet(doc, {})
 
     retval = style.saveResultToString(xmldoc)
-    
+
     style.freeStylesheet()
     doc.freeDoc()
     xmldoc.freeDoc()
-    
+
     return retval
 
 
@@ -119,8 +119,8 @@ def main():
         args = sys.argv[1:]
 
     examFname = args[0]
-        
-    
+
+
     info = {}
     info['sate:user'] = 'alumno'
     info['sate:pass'] = 'pass'
