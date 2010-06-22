@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?><!-- -*- XML -*- -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-  <xsl:output 
+  <xsl:output
     method = "text"
     encoding = "iso-8859-1"
     omit-xml-declaration = "yes"
@@ -10,7 +10,7 @@
     indent = "no" />
 
   <xsl:param name="readonly"/>
-  
+
   <xsl:template match="exam_view">
 
 <!--
@@ -77,34 +77,41 @@
       \usepackage[bf,small]{caption2}
       \setlength{\captionmargin}{0.2cm}
 
-      \geometry{margin=1.8cm,top=2.5cm,bottom=2.5cm}
+      \geometry{margin=1.8cm,top=3cm,bottom=2cm}
 
       \graphicspath{{/home/david/repos/graf/images/} {images/} {./}}
 
-		
+
       \definecolor{uclm}{cmyk}{0.2,1,0.6,0.5}
       \definecolor{uclm-light}{cmyk}{0,0.1,0.1,0}
       \definecolor{arco}{cmyk}{0.6,0.4,0,0.3}
       \definecolor{arco-light}{cmyk}{0.1,0,0,0}
-      
-      \newcommand{\UCLMcolor}[1]{\textcolor{uclm}{#1}}
+
+      % PANTONE 7427. R:60 G:8 B:15
+      \definecolor{uclmred}{rgb}{.60,.08,.15}
+
+      % Cool Gray 5. R:72 G:70 B:68
+      \definecolor{uclmgray}{rgb}{.72,.70,.68}
+
       \newcommand{\UCLMbgcolor}[1]{\color{uclm-light}#1}
 
-      \newcommand{\UCLMlogo}[1][height=1.3cm]{\UCLMcolor{\includegraphics[#1]{uclm.pdf}}}
-
-\newcommand{\UCLM}{{UCLM}}
-\newcommand{\UCLMname}{{\includegraphics[width=.4\textwidth]{uclmtext.pdf}}}
-
-\newcommand{\CSname}{\textbf{\textsf{Departamento de Imformática}}}
 \newcommand{\ESIname}{\textbf{\textsf{Escuela Superior de Informática}}}
 
-\newcommand{\ESIhead}{\UCLMcolor{%
-  \UCLMlogo[height=0.8cm]%
-  \begin{tabular}[b]{l}
-    {\large\UCLMname}\\
-    {\normalsize\ESIname}
-  \end{tabular}}}
-
+\newcommand{\UCLMhead}[2]{
+  \setlength{\unitlength}{1in}
+  \begin{picture}(0,0)
+    \put(-0.5,0){\includegraphics[width=4cm]{uclm.pdf}}
+    \put(1.2,0.3){\makebox(0,0)[l]{\textsf{\textbf{\Large #1}}}}
+    \put(1.2,0.055){\makebox(0,0)[l]{\textsf{\textbf{\large %
+            \textcolor{uclmred}{\ESIname}}}}}
+    \put(7.2,0.55){\makebox(0,0)[r]{%
+        \parbox{0.7\textwidth}{
+          \begin{flushright}
+            #2
+          \end{flushright}
+      }}}
+  \end{picture}
+}
 \newcommand{\UCLMbglogo}{\ifcolor{%
   \begin{picture}(0,0)
     \put(0,0){\centerline{%
@@ -120,8 +127,6 @@
 % Eliminar la marca de agua del escudo
 \renewcommand{\UCLMbglogo}{}
 
-
-
       \newcommand{\headframe}{%
          \setlength{\fboxsep}{0mm}%
          \setlength{\fboxrule}{1pt}%
@@ -135,15 +140,15 @@
          \end{picture}}
 
 
-
-      \header{\UCLMbglogo\headframe\UCLMcolor{\ESIhead}}{}{%
+\header{%
+	\UCLMhead{%
     </xsl:text>
     <xsl:call-template name="subject"/>
-    <xsl:text>{</xsl:text>
+    <xsl:text>}{</xsl:text>
     <xsl:call-template name="title"/>
-    <xsl:text>, </xsl:text>
+    <xsl:text>\\ </xsl:text>
     <xsl:call-template name="date"/>
-    <xsl:text>}}
+    <xsl:text>}}{}{}
       \footer{}{Pág. \thepage{}/\numpages}{}
 
       % exam class
@@ -155,16 +160,6 @@
       \addtolength{\altolinea}{0.5cm}
       \setlength{\fboxsep}{.2cm}
 
-<!--      
-      \title{%
-      \textbf{Arquitectura e Ingeniería de Computadores}\\
-      Examen Final (Prácticas)}
-      \author{\UCLM{}\LaTeX{} package}
-      \date{8 de julio de 2003}
--->
-
-
-
 
       \begin{document}
 
@@ -175,8 +170,8 @@
 
     <xsl:if test="count(instructions)">
       <xsltext>
-	\begin{center} 
-	\parbox{14cm}{\emph{ </xsltext>
+	\begin{center}
+	\parbox{16cm}{\emph{ </xsltext>
       <xsl:apply-templates select="instructions"/>
       <xsl:text>}}
 	\end{center}
@@ -198,7 +193,7 @@
     <xsl:apply-templates select="hline"/>
 
     <xsl:text>\begin{questions} &#10;</xsl:text>
-    <xsl:apply-templates select="question"/> 
+    <xsl:apply-templates select="question"/>
     <xsl:text>&#10; \end{questions} &#10;</xsl:text>
 
     <xsl:text>\end{document} &#10;</xsl:text>
@@ -206,14 +201,11 @@
 
   <!-- el nombre de la asignatura -->
   <xsl:template name="subject">
-    <xsl:text>\textbf{\large </xsl:text>
     <xsl:value-of select="@course"/>
-    <xsl:text> }\\ </xsl:text>
   </xsl:template>
 
   <!-- el motivo del examen -->
   <xsl:template name="title">
-    <xsl:text>\small </xsl:text>
     <xsl:value-of select="@title"/>
   </xsl:template>
 
@@ -261,7 +253,7 @@
     </xsl:choose>
 
     <xsl:apply-templates select="*[name()!='text' and name()!='extra']"/>
-    
+
     <xsl:choose>
       <xsl:when test="$multicol">
 	<xsl:text>\end{multicols}
@@ -312,9 +304,9 @@
       <xsl:text>] </xsl:text>
     </xsl:if>
 
-    <xsl:text> &#10;</xsl:text>    
+    <xsl:text> &#10;</xsl:text>
     <xsl:apply-templates select="part"/>
-    
+
     <xsl:if test="count(part)=0">
       <xsl:call-template name="part"/>
     </xsl:if>
@@ -324,7 +316,7 @@
     <xsl:if test="position()!=last()">
       <xsl:text>\mbox{} \\[0.5cm] &#10;</xsl:text>
     </xsl:if>
-    
+
 <!--
     <xsl:apply-templates select="*[name()!='text']">
       <xsl:with-param name="id" select="concat(@topic,':',@id)"/>
@@ -405,7 +397,7 @@
           <xsl:value-of select="'\%'"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="./@unit"/>	  
+          <xsl:value-of select="./@unit"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
@@ -429,13 +421,13 @@
    <xsl:text>\begin{center}
       \fbox{\parbox{.9\textwidth}{</xsl:text>
     <xsl:apply-templates select="answer"/>
-    <xsl:text> 
+    <xsl:text>
       }}
       \end{center}
     </xsl:text>
   </xsl:template>
 
-  
+
   <!-- elementos de formato -->
   <xsl:template match="ul">
     <xsl:text>\begin{itemize} </xsl:text>
@@ -447,7 +439,7 @@
     <xsl:apply-templates/>
     <xsl:text>\mbox{} \\[0.1cm] </xsl:text>
 <!--
-    <xsl:text>\mbox{} \\newline</xsl:text>      
+    <xsl:text>\mbox{} \\newline</xsl:text>
 -->
   </xsl:template>
 
@@ -508,15 +500,15 @@
   </xsl:template>
 
 
-  
+
 
 
   <xsl:template match="question/item">
-    <xsl:param name="id"/>  
+    <xsl:param name="id"/>
     <xsl:variable name="pos">
       <xsl:number value="position()" format="a" />
     </xsl:variable>
- 
+
     <xsl:variable name="correct" select="count(../answer/item[@value=$pos])"/>
 
     <tr>
@@ -553,7 +545,7 @@
   </xsl:template>
 
   <xsl:template match="question/freetext">
-    <xsl:param name="id"/> 
+    <xsl:param name="id"/>
     <tr>
       <td>&#160;</td>
       <td>
@@ -603,7 +595,7 @@
       <xsl:when test="$month=10">octubre</xsl:when>
       <xsl:when test="$month=11">noviembre</xsl:when>
       <xsl:when test="$month=12">diciembre</xsl:when>
-      <xsl:otherwise><xsl:value-of select="$month"/></xsl:otherwise>	
+      <xsl:otherwise><xsl:value-of select="$month"/></xsl:otherwise>
     </xsl:choose>
     <xsl:text> de </xsl:text>
     <xsl:value-of select="substring($date,1,4)"/>
