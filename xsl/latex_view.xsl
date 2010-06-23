@@ -171,7 +171,7 @@
     <xsl:if test="count(instructions)">
       <xsltext>
 	\begin{center}
-	\parbox{16cm}{\emph{ </xsltext>
+	\parbox{16cm}{\emph{\noindent </xsltext>
       <xsl:apply-templates select="instructions"/>
       <xsl:text>}}
 	\end{center}
