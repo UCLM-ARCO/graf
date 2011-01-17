@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="iso-8859-1"?><!-- -*- XML -*- -->
 <xsl:stylesheet version="1.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"                
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:exsl="http://exslt.org/common"
-  extension-element-prefixes="exsl">
+  extension-element-prefixes="exsl"
+  xmlns:random="http://arco.esi.uclm.es/random"
+  xsl:exclude-result-prefixes="random">
 
-  <xsl:output 
+
+  <xsl:output
     method = "xml"
     encoding = "iso-8859-1"
     omit-xml-declaration = "no"
@@ -36,9 +39,9 @@
   <xsl:param name="setcourse"/>
   <xsl:param name="setexam"/>
   <xsl:param name="solution"/>
-  <xsl:param name="part"/>    
+  <xsl:param name="part"/>
 
-  
+
   <xsl:template match="exam">
     <xsl:for-each select="part">
       <xsl:if test="position()=number($part)">
@@ -46,13 +49,13 @@
       </xsl:if>
     </xsl:for-each>
   </xsl:template>
-    
+
 
   <xsl:template name="gen_exam">
-    <exam_view 
-      id="{$setexam}" 
+    <exam_view
+      id="{$setexam}"
       user="{$setuser}" pass="{$setpass}"
-      from="{/exam/@from}" 
+      from="{/exam/@from}"
       >
 
       <xsl:if test="count(/exam/@show_points)">
@@ -85,6 +88,9 @@
   <xsl:template match="question">
     <xsl:variable name="ref" select="@id"/>
     <xsl:element name="question">
+      <xsl:attribute name="order">
+	<xsl:value-of select="random:random()"/>
+      </xsl:attribute>
       <xsl:copy-of select="@*"/>
       <xsl:copy-of select="document(concat($rootdir, ./@topic,'.xml'))/qset/question[@id=$ref]/@*"/>
       <xsl:apply-templates select="document(concat($rootdir,

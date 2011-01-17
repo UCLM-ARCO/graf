@@ -630,7 +630,7 @@
 
   <xsl:template match="figure">
 \begin{center}
-\includegraphics[scale=<xsl:value-of select="@scale"/>]{<xsl:value-of select="@src"/>}
+\includegraphics[width=<xsl:value-of select="@width"/>\textwidth]{<xsl:value-of select="@src"/>}
 \end{center}
   </xsl:template>
 
@@ -642,4 +642,3 @@
 -->
 
 </xsl:stylesheet>
-

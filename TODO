@@ -10,7 +10,7 @@
 
 * latex_view tiene la ruta de las imágenes "a pelo"
 
-* Intentar compilar los .ltx con rubber.
+* Intentar compilar los .tex con rubber.
 
 * Buscar una fuente monoespacio para las opciones "(a) (b)..."
 

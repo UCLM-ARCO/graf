@@ -5,7 +5,18 @@ import os, sys
 import libxml2, libxslt
 import string
 import urllib
+import random
 from types import *
+
+
+def f_random(ctx):
+    return 0
+#    return str(random.randint(1,1000))
+
+libxslt.registerExtModuleFunction("random",
+                                  "http://arco.esi.uclm.es/random",
+                                  f_random)
+
 
 
 ROOT='/home/david/repos/graf'
@@ -109,7 +120,7 @@ def main():
         sys.exit(1)
 
     if sys.argv[1] == 'clean':
-        os.system('rm *.ltx *.aux *.log *.pdf')
+        os.system('rm *.tex *.aux *.log *.pdf')
         return 1
 
     if sys.argv[1] == '-sol':
@@ -141,13 +152,13 @@ def main():
 
     #os.environ['TEXMFOUTPUT'] = os.path.join(os.getcwd(), 'output')
 
-    ltx = []
+    tex = []
     for p in range(len(partes)):
         xml_exam = generate_exam(examFname, info, p+1, solution)
         latex_exam = generate_latex_view(xml_exam)
 
-        fname = "%s-%s.ltx" % (base, partes[p])
-        ltx.append(fname)
+        fname = "%s-%s.tex" % (base, partes[p])
+        tex.append(fname)
         print 'Generating...', fname
         fd = open(fname, 'wt')
         fd.write(latex_exam)
@@ -155,7 +166,7 @@ def main():
 
 
     print 'compiling docs...'
-    for fname in ltx:
+    for fname in tex:
         print 'Compiling...', fname,
         retval = os.system('pdflatex --interaction=batchmode "%s" >> /dev/null' % fname)
         if retval:
