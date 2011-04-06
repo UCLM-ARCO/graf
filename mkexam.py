@@ -19,9 +19,13 @@ libxslt.registerExtModuleFunction("random",
 
 
 
-ROOT='/home/david/repos/graf'
+#ROOT='/home/david/repos/graf'
 
 #rootdir = os.path.join(os.getcwd(),'db')
+
+ROOT = os.path.dirname(__file__)
+print ROOT
+
 
 #generar en XML el examen solicitado para el alumno peticionario
 def generate_exam(examFname, sate_info, exam_part, solution):
@@ -73,7 +77,7 @@ def generate_exam(examFname, sate_info, exam_part, solution):
 
 def generate_latex_view(cad):
 
-    styledoc = libxml2.parseFile(os.path.join(ROOT, 'xsl', 'latex_view.xsl'))
+    styledoc = libxml2.parseFile(os.path.join(ROOT, 'xsl', 'latex_view_mark.xsl'))
     style = libxslt.parseStylesheetDoc(styledoc)
 
     doc =  libxml2.parseMemory(cad, len(cad))
