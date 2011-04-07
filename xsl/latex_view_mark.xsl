@@ -36,8 +36,10 @@
       \usepackage{fancyhdr}
       \usepackage{afterpage}
       \usepackage{geometry}
-
-      \usepackage{amssymb}
+      \usepackage[geometry]{ifsym}
+      \usepackage[miscellaneous]{dingbat}    
+      \usepackage{bbding}              
+      \usepackage{marvosym}
 
 
       \usepackage[latin1]{inputenc}
@@ -71,7 +73,7 @@
       \usepackage[bf,small]{caption2}
       \setlength{\captionmargin}{0.2cm}
 
-      \geometry{margin=1.8cm,top=3cm,bottom=2cm}
+      \geometry{margin=1.8cm,top=3cm,bottom=4cm}
 
       \graphicspath{{/home/david/repos/graf/images/} {images/} {./}}
 
@@ -143,7 +145,12 @@
     <xsl:text>\\ </xsl:text>
     <xsl:call-template name="date"/>
     <xsl:text>}}{}{}
-      \footer{}{Pág. \thepage{}/\numpages}{}
+
+      \footer{}{\center \fontsize{20pt}{20pt} \selectfont  \NoChemicalCleaning \hspace{80 mm} 
+                        \fontsize{12pt}{12pt} \selectfont  \raisebox{1mm}{DNI:}
+                        \fontsize{20pt}{20pt} \selectfont  \raisebox{-1mm}{\Square\Square\Square\Square\Square\Square\Square\Square}
+                          \NoChemicalCleaning  \newline
+         \fontsize{12pt}{12pt} \selectfont Pág. \thepage{}/\numpages }{}
 
       % exam class
       \pointname{p}
@@ -157,7 +164,7 @@
 
       \begin{document}
       
-\includegraphics{images/horizBar.jpg}
+
 
 \pagestyle{headandfoot}
 
@@ -266,7 +273,7 @@
   
   
     <xsl:template match="item">
-    <xsl:text>{\fontsize{15pt}{15pt} \selectfont \includegraphics{images/casillaPregunta.jpg}  }</xsl:text>
+    <xsl:text>{  \fontsize{15pt}{15pt} \selectfont \SquareShadowB }  }</xsl:text>
     <xsl:call-template name="item" select="."/>
   </xsl:template>
   
