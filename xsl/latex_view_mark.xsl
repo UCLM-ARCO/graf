@@ -37,8 +37,8 @@
       \usepackage{afterpage}
       \usepackage{geometry}
       \usepackage[geometry]{ifsym}
-%      \usepackage[miscellaneous]{dingbat}    
-%      \usepackage{bbding}              
+%      \usepackage[miscellaneous]{dingbat}
+%      \usepackage{bbding}
 %      \usepackage{marvosym}
 
 
@@ -144,7 +144,7 @@
     <xsl:call-template name="date"/>
     <xsl:text>}}{}{}
 
-      \footer{}{\center \fontsize{20pt}{20pt} \selectfont  \DiamondShadowB \hspace{80 mm} 
+      \footer{}{\center \fontsize{20pt}{20pt} \selectfont  \DiamondShadowB \hspace{80 mm}
                         \fontsize{12pt}{12pt} \selectfont  \raisebox{1mm}{DNI:}
                         \fontsize{20pt}{20pt} \selectfont  \raisebox{-1mm}{\Square\Square\Square\Square\Square\Square\Square\Square}
                           \DiamondShadowB  \newline
@@ -161,7 +161,7 @@
 
 
       \begin{document}
-      
+
 
 
 \pagestyle{headandfoot}
@@ -199,8 +199,8 @@
 
     <xsl:text>\end{document} &#10;</xsl:text>
   </xsl:template>
-  
-  
+
+
 
 
 
@@ -218,7 +218,7 @@
     <xsl:choose>
       <xsl:when test="$multicol">
 	<xsl:text>
-	
+
 
 	</xsl:text>
       </xsl:when>
@@ -232,7 +232,7 @@
     <xsl:choose>
       <xsl:when test="$multicol">
 	<xsl:text>
-	  
+
       </xsl:text>
       </xsl:when>
        <xsl:otherwise>
@@ -268,12 +268,12 @@
 
 <!--     <xsl:text>\mbox{} \\[0.3cm] </xsl:text> -->
   </xsl:template>
-  
-  
+
+
     <xsl:template match="item">
-    <xsl:text>{  \fontsize{15pt}{15pt} \selectfont \SquareShadowB  }</xsl:text>
+    <xsl:text>{  \fontsize{12pt}{12pt} \selectfont \SquareShadowB  }</xsl:text>
     <xsl:call-template name="item" select="."/>
   </xsl:template>
-  
-  
+
+
 </xsl:stylesheet>
