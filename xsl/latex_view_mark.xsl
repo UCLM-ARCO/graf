@@ -37,9 +37,9 @@
       \usepackage{afterpage}
       \usepackage{geometry}
       \usepackage[geometry]{ifsym}
-      \usepackage[miscellaneous]{dingbat}    
-      \usepackage{bbding}              
-      \usepackage{marvosym}
+%      \usepackage[miscellaneous]{dingbat}    
+%      \usepackage{bbding}              
+%      \usepackage{marvosym}
 
 
       \usepackage[latin1]{inputenc}
@@ -76,8 +76,6 @@
       \geometry{margin=1.8cm,top=3cm,bottom=4cm}
 
       \graphicspath{{/home/david/repos/graf/images/} {images/} {./}}
-
-
       \definecolor{uclm}{cmyk}{0.2,1,0.6,0.5}
       \definecolor{uclm-light}{cmyk}{0,0.1,0.1,0}
       \definecolor{arco}{cmyk}{0.6,0.4,0,0.3}
@@ -146,10 +144,10 @@
     <xsl:call-template name="date"/>
     <xsl:text>}}{}{}
 
-      \footer{}{\center \fontsize{20pt}{20pt} \selectfont  \NoChemicalCleaning \hspace{80 mm} 
+      \footer{}{\center \fontsize{20pt}{20pt} \selectfont  \DiamondShadowB \hspace{80 mm} 
                         \fontsize{12pt}{12pt} \selectfont  \raisebox{1mm}{DNI:}
                         \fontsize{20pt}{20pt} \selectfont  \raisebox{-1mm}{\Square\Square\Square\Square\Square\Square\Square\Square}
-                          \NoChemicalCleaning  \newline
+                          \DiamondShadowB  \newline
          \fontsize{12pt}{12pt} \selectfont Pág. \thepage{}/\numpages }{}
 
       % exam class
@@ -273,7 +271,7 @@
   
   
     <xsl:template match="item">
-    <xsl:text>{  \fontsize{15pt}{15pt} \selectfont \SquareShadowB }  }</xsl:text>
+    <xsl:text>{  \fontsize{15pt}{15pt} \selectfont \SquareShadowB  }</xsl:text>
     <xsl:call-template name="item" select="."/>
   </xsl:template>
   
