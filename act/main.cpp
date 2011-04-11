@@ -10,6 +10,27 @@
 #include "ml.h"
 #endif
 #include <math.h>
+
+
+#include <stdlib.h> 
+#include <sys/types.h> 
+#include <dirent.h> 
+#include <errno.h> 
+
+#define N_PAGINAS_MAX 100
+#define N_ITEMS_MAX 100
+
+struct Examen 	
+{ 
+  int n_paginas;
+  int n_items [N_PAGINAS_MAX];
+  int respuestas [N_PAGINAS_MAX][N_ITEMS_MAX];
+  CvPoint origen [N_PAGINAS_MAX];
+  CvPoint destino [N_PAGINAS_MAX];  
+};
+
+
+
 /****OCR****/
 void findX(IplImage* imgSrc,int* min, int* max){
 	int i;
@@ -258,11 +279,12 @@ int estaMarcada(CvMat * marcadog ,  CvRect punto){
   double media2;
   cvGetSubRect(marcadog,&data, punto);
   media = cvAvg(&data);
-  if (media.val[0] < 250) return 1;
+ // printf ("Marca %f \n",media.val[0]);
+  if (media.val[0] < 160) return 1;
   else return 0;
 }
 
-void puntosParaTemplate (CvMat * imagen, CvMat *  marca, int *npuntos, float * valores){
+void puntosParaTemplate (CvMat * imagen, CvMat *  marca, int *npuntos, CvPoint * valores){
   const int MAX_CORNERS = 100;
   CvPoint2D32f corners[MAX_CORNERS] = {0};
 
@@ -281,71 +303,134 @@ void puntosParaTemplate (CvMat * imagen, CvMat *  marca, int *npuntos, float * v
  
   cvGoodFeaturesToTrack(resultado,eig_image,temp_image,corners,&corner_count,quality_level,min_distance,NULL,eig_block_size,use_harris);
 
-  //TODO: Ordenar puntos
   for( int i = 0; i < corner_count; i++) {
-      valores [(i*2)] = corners[i].x;
-      valores [(i*2)+1] = corners[i].y;
-      printf ("Punto: %f %f  \n ", corners[i].x, corners[i].y);
+      valores [i] = cvPoint( corners[i].x,corners[i].y);
   }
+  
   *npuntos =  corner_count;
 }
 
 
-void leeExamen(char * nombreExamen){
+int horizontal_cmp(const void *a, const void *b)  {
+  const CvPoint *p1 = (const CvPoint *)a;
+  const CvPoint *p2 = (const CvPoint *)b;
+  if (p1->x < p2->x) return -1;
+  else if (p1->x == p2->x) return 0;
+  else return 1;
+}
+
+
+int vertical_cmp(const void *a, const void *b)  {
+  const CvPoint *p1 = (const CvPoint *)a;
+  const CvPoint *p2 = (const CvPoint *)b;
+  if (p1->y < p2->y) return -1;
+  else if (p1->y == p2->y) return 0;
+  else return 1;
+}
+
+void leeExamen(char * nombreExamen,Examen ex, int pagina,int examen){
     printf("leeExamen %s \n",nombreExamen);
     CvMat* marcado  = cvLoadImageM(nombreExamen, CV_LOAD_IMAGE_GRAYSCALE);
     IplImage* marcadoi  = cvLoadImage(nombreExamen, CV_LOAD_IMAGE_COLOR);
     CvMat* marcadog = cvLoadImageM(nombreExamen, CV_LOAD_IMAGE_GRAYSCALE);
     CvMat* itemP    = cvLoadImageM("itemP.jpg", CV_LOAD_IMAGE_GRAYSCALE);
     CvMat* itemH    = cvLoadImageM("itemH.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+    
+
     //Corregir giro    
     int npuntos;
-    float pos [50] = {0}; 
+    CvPoint  pos [100] = {0}; 
+    
+    printf("Localizando items Horizontales... \n");
     puntosParaTemplate (marcado, itemH, &npuntos, pos);
-    int x1 = (int) pos[0];
-    int y1 = (int) pos[1];
-    int x2 = (int) pos[2];
-    int y2 = (int) pos[3];
-    CvMat * rot_mat = cvCreateMat(2, 3, CV_32F);
-    float ang_rad = atan((y2-y1)/(x2-x1));
-    float degrees = - (180 * ang_rad / 3.14);
-    CvPoint2D32f center = cvPoint2D32f( marcado->width/2, marcado->height/2 );
-    cv2DRotationMatrix( center, degrees, 1, rot_mat );
-    cvWarpAffine( marcado, marcadog, rot_mat );
-
+    printf("  -> obtenidos : %d \n", npuntos);
+          
+    if (npuntos == 2) {
+      printf("    -> P1 (%d,%d) \n", pos[0].x,pos[0].y);
+      printf("    -> P2 (%d,%d) \n", pos[1].x,pos[1].y);
+            
+      qsort(  pos, 2, sizeof(CvPoint ), horizontal_cmp);
+      
+      printf ("    Ordenando...\n");
+      printf("    -> P1 (%d,%d) \n", pos[0].x,pos[0].y);
+      printf("    -> P2 (%d,%d) \n", pos[1].x,pos[1].y);      
+            
+      CvMat * rot_mat = cvCreateMat(2, 3, CV_32F);
+      float ang_rad = atan((pos[1].y-pos[0].y )/(pos[1].x-pos[0].x));
+      float degrees = - (180 * ang_rad / 3.14);
+      CvPoint2D32f center = cvPoint2D32f( marcado->width/2, marcado->height/2 );
+      cv2DRotationMatrix( center, degrees, 1, rot_mat );
+      cvWarpAffine( marcado, marcadog, rot_mat );
+    } else printf("Numero de punto de giro incorrecto.\n");
+    
+    
+    
     // Posicion respuestas y marcas horizontales despues de girar
     int npuntosHor;
-    float posHor [50] = {0};
+    CvPoint posHor [100] = {0};
 
     int npuntosRes;
-    float posRes [50] = {0};
+    CvPoint posRes [100] = {0};
 
     puntosParaTemplate (marcadog, itemH, &npuntosHor, posHor);
+    printf("Localizando items Horizontales despues de girar... \n");
+    printf("  -> obtenidos : %d \n", npuntosHor);
+    printf("    -> P1 (%d,%d) \n", posHor[0].x,posHor[0].y);
+    printf("    -> P2 (%d,%d) \n", posHor[1].x,posHor[1].y);
    
     puntosParaTemplate (marcadog, itemP, &npuntosRes, posRes);  
+    qsort(  posRes, npuntosRes, sizeof(CvPoint ), vertical_cmp);
 
+    CvPoint origen =  ex.origen[pagina];
+    CvPoint destino =  ex.destino[pagina];
+    int nrespuesta = 0;
     for (int i=0; i < npuntosRes; i++) {
-      CvRect rect =    cvRect( posRes[(i*2)]+3, posRes[(i*2)+1]+2, 27, 27 );
-      cvDrawRect(marcadoi,cvPoint(posRes[(i*2)]+3, posRes[(i*2)+1]+2) , cvPoint(posRes[(i*2)]+3+40, posRes[(i*2)+1]+2+40) ,CV_RGB(0,255,0), 2);
-      if  (estaMarcada( marcadog , rect )){
-        cvDrawRect(marcadoi,cvPoint(posRes[(i*2)]+3, posRes[(i*2)+1]+2) , cvPoint(posRes[(i*2)]+3+20, posRes[(i*2)+1]+2+20) ,CV_RGB(255,0,0), 2);
-        printf ("  Respuesta marcada: %d \n  " , i);
+      CvRect rect =    cvRect( posRes[i].x+3, posRes[i].y+2, 27, 27 );
+
+      printf (" Validando punto para pag %d (%d,%d) (%d,%d) (%d,%d)\n",pagina,origen.x,origen.y, posRes[i].x,posRes[i].y,destino.x,destino.y);
+      if (  origen.x < posRes[i].x and 
+            destino.x > posRes[i].x and
+            origen.y > posRes[i].y and
+            destino.y < posRes[i].y) {
+            
+         //      cvDrawRect(marcadoi,cvPoint(posRes[i].x+3, posRes[i].y+2) , cvPoint(posRes[i].x+3+40, posRes[i].y+2+40) ,CV_RGB(0,255,0), 2);
+        if ( (  (posRes[i].y+2)   > 192) and   ( (posRes[i].y+2)  < 2000)  ) {
+          if  (estaMarcada( marcadog , rect )) {
+            if (ex.respuestas[pagina][nrespuesta]) {
+               cvDrawRect(marcadoi,cvPoint(posRes[i].x+3, posRes[i].y+2) , cvPoint(posRes[i].x+3+20, posRes[i].y+2+20) ,CV_RGB(255,0,0), 2);
+            }
+            else {         
+               cvDrawRect(marcadoi,cvPoint(posRes[i].x+3, posRes[i].y+2) , cvPoint(posRes[i].x+3+20, posRes[i].y+2+20) ,CV_RGB(0,255,0), 2);
+            }
+          } else if (    cvDrawRect(marcadoi,cvPoint(posRes[i].x+3, posRes[i].y+2) , cvPoint(posRes[i].x+3+20, posRes[i].y+2+20) ,CV_RGB(255,0,0), 2);){
+          
+          }
+        }
+        nrespuesta ++ ;
       }
     }
     
     CvMat data[8];
    
-    float puntoVal = posHor[2]-57;
-    CvRect punto =  cvRect( posHor[2]-57, posHor[3]+4, 30, 32 );
+    float puntoVal = posHor[1].x-57;
+    CvRect punto =  cvRect( posHor[1].x-57, posHor[1].y+4, 30, 32 );
 
     for (int i=0; i < 8; i++) {  
       cvGetSubRect(marcadog,&data[i], punto);
       puntoVal -= 55;
-      punto =  cvRect( puntoVal, posHor[3]+4, 30, 32 );
+      punto =  cvRect( puntoVal, posHor[1].y+4, 30, 32 );
       
     }
     
-    //OCR
+    cvNamedWindow( "Demo", CV_WINDOW_NORMAL );
+    cvShowImage( "Demo", marcadoi  );
+//    cvWaitKey(0);
+    
+    char ficheroSalida[50];
+    sprintf( ficheroSalida, "./ExamenesResueltos/Ex-%d-p-%d.jpg\0", examen,pagina);
+    cvSaveImage(ficheroSalida ,marcadoi);
+    
+/*    //OCR
     float num;
     char ventana[15];
     char nres[2];
@@ -366,7 +451,6 @@ void leeExamen(char * nombreExamen){
       dst_imgp = cvCreateImage( cvSize(200, 200) ,  dst_img ->depth,  dst_img ->nChannels );
       cvResize(dst_img, dst_imgp);
       cvPutText(dst_imgp, nres, cvPoint(0, 35), &font, cvScalar(0, 0, 0, 0));
-
       cvShowImage( ventana, dst_imgp   );
     }
 
@@ -374,20 +458,132 @@ void leeExamen(char * nombreExamen){
     cvNamedWindow( "Demo", CV_WINDOW_AUTOSIZE );
     cvShowImage( "Demo", marcadoi  );
     cvWaitKey(0);
+*/
 
+
+
+    cvRelease(marcado);
+    cvRelease(marcadoi);
+    cvRelease(marcadog);
+    cvRelease(itemP);
+    cvRelease(itemH);
+    
 }
 
-
+int cstring_cmp(const void *a, const void *b) 
+{ 
+    const char **ia = (const char **)a;
+    const char **ib = (const char **)b;
+    return strcmp(*ia, *ib);
+	/* strcmp functions works exactly as expected from
+	comparison function */ 
+} 
+ 
+ 
 int main( int argc, char** argv )
 {
+  int tam;
+  char * cadena;
+  char * files [1000];
+  char file[255];
+	       
+  DIR *dip; 
+  struct dirent   *dit; 
+  int             i = 0; 
 
+  struct Examen ex;
+  ex.n_paginas = 5;
+  ex.n_items [0]  = 24;
+  ex.n_items [1]  = 24;
+  ex.n_items [2]  = 20;
+  ex.n_items [3]  = 8;
+  ex.n_items [4]  = 4;  
+  
+  
+  
+  // desde punto inferior izquierda hasta punto superior derecho
+  ex.origen[0] = cvPoint(190,2000);  
+  ex.destino[0] = cvPoint(267,450);    
+  
+  ex.origen[1] = cvPoint(190,2000);  
+  ex.destino[1] = cvPoint(267,264);    
+  
+  ex.origen[2] = cvPoint(190,1700);  
+  ex.destino[2] = cvPoint(267,284);    
+  
+  ex.origen[3] = cvPoint(190,900);  
+  ex.destino[3] = cvPoint(267,354);      
+
+  ex.origen[4] = cvPoint(190,1458);  
+  ex.destino[4] = cvPoint(267,1227 );      
+  
+  ex.respuestas[0][0]  = 1;
+  ex.respuestas[0][5]  = 1;
+  ex.respuestas[0][11] = 1;
+  ex.respuestas[0][15] = 1;  
+  ex.respuestas[0][16] = 1;  
+  ex.respuestas[0][22] = 1;  
+    
+  ex.respuestas[1][1] = 1;
+  ex.respuestas[1][5] = 1;
+  ex.respuestas[1][10] = 1;
+  ex.respuestas[1][15] = 1;
+  ex.respuestas[1][16] = 1;
+  ex.respuestas[1][23] = 1;
+  
+  
+  ex.respuestas[2][3] = 1;
+  ex.respuestas[2][7] = 1;
+  ex.respuestas[2][11] = 1;
+  ex.respuestas[2][12] = 1;
+  
  
+  
+  ex.respuestas[3][3] = 1;
+  ex.respuestas[3][7] = 1;
+
+  ex.respuestas[4][0] = 1;
+
+
+  
+
+
+  printf ("OCR\n");
+  basicOCR();
+    
+  if ((dip = opendir("./ExamenesOriginal/")) == NULL) { 
+    perror("opendir"); 
+    return 0; 
+  } 
+    
+    
+    while ((dit = readdir(dip)) != NULL){ 
+      tam = strlen(dit->d_name);
+      cadena = &(dit->d_name[tam-4]);
+      if (not strcmp(cadena, ".jpg\0")) {
+        files [i] = dit->d_name;
+        i++;         
+      }
+    } 
+ 
+    qsort(files, i, sizeof(char *), cstring_cmp);
+    int contador_examenes;
+    for (int j = 0; j< i ; j++) {
+        printf("Reconocimiento de examenes %s \n",files[j]);
+        sprintf(file,"./ExamenesOriginal/%s\0",files[j]);        
+        leeExamen(file,ex,j%ex.n_paginas, j/ex.n_paginas);        
+    }
    
 
-    printf ("OCR\n");
-    basicOCR();
-    printf( "Reconocimiento de examenes\n");
-    leeExamen("./ex-002.jpg");
+    
+    if (closedir(dip) == -1) { 
+      perror("closedir"); 
+      return 0; 
+    } 
+
+    
+            
+
     return 0;
 }
 
