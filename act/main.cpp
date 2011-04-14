@@ -15,7 +15,8 @@
 #include <dirent.h> 
 #include <errno.h> 
 
-
+#define MARCA_HORIZONTAL "itemH.jpg"
+#define MARCA_PREGUNTA   "itemP.jpg"
 #define MAX_FILES 1000
 #define MAX_LEN_FILENAME 255
 
@@ -34,8 +35,7 @@ void debugWindow( CvMat * c ){
  ******************************************************************************/
 #define N_PAGINAS_MAX 100
 #define N_ITEMS_MAX 100
-struct Examen 	
-{ 
+struct Examen { 
   int n_paginas;
   int n_items           [N_PAGINAS_MAX];
   int respuestas        [N_PAGINAS_MAX][N_ITEMS_MAX];
@@ -57,15 +57,56 @@ struct ResultadoPagina
 /******************************************************************************/
 
 
+/*******************************************************************************
+ **********************                             ****************************
+ ******************** Metodos auxiliares de ordenacion *************************
+ **********************         (qsort)             ****************************
+ ******************************************************************************/
 
 /*******************************************************************************
- *****************************Sistema de lectura********************************
+ ****************** Ordenar coordenadas en horizontal **************************
  ******************************************************************************/
- 
-#define MAX_CORNERS  100 //Numero maximo de marcas en una pagina
+int horizontal_cmp(const void *a, const void *b)  {
+  const CvPoint *p1 = (const CvPoint *)a;
+  const CvPoint *p2 = (const CvPoint *)b;
+  if (p1->x < p2->x) return -1;
+  else if (p1->x == p2->x) return 0;
+  else return 1;
+}
 
-/***** Dado un rectangulo de una imagen, decide si esta marcado o no **********/
-int estaMarcada(CvMat * marcadog ,  CvRect punto){
+/*******************************************************************************
+ ******************* Ordenar coordenadas en vertical ***************************
+ ******************************************************************************/
+int vertical_cmp(const void *a, const void *b)  {
+  const CvPoint *p1 = (const CvPoint *)a;
+  const CvPoint *p2 = (const CvPoint *)b;
+  if (p1->y < p2->y) return -1;
+  else if (p1->y == p2->y) return 0;
+  else return 1;
+}
+
+/*******************************************************************************
+ ************************ Ordenar cadenas **************************************
+ ******************************************************************************/
+int cstring_cmp(const void *a, const void *b){ 
+  const char **ia = (const char **)a;
+  const char **ib = (const char **)b;
+  return strcmp(*ia, *ib);
+}
+/******************************************************************************/
+
+
+/*******************************************************************************
+ **************************                        *****************************
+ **************************   Sistema de lectura   *****************************
+ **************************        (opencv)        *****************************
+ ******************************************************************************/
+
+
+/*******************************************************************************
+ ******Dado un rectangulo de una imagen, decide si esta marcado o no ***********
+ ******************************************************************************/
+int esta_marcada(CvMat * marcadog ,  CvRect punto){
   CvScalar media;
   CvMat data;
   double media2;
@@ -76,15 +117,19 @@ int estaMarcada(CvMat * marcadog ,  CvRect punto){
   if (media.val[0] < 200.0) return 1;
   else return 0;
 }
+/******************************************************************************/
 
-
-/**************Dada una marca, se busca en la imagen, se************************
- ************devuelve el numero de puntos y las posiciones*********************/
-void puntosParaTemplate (CvMat * imagen, CvMat *  marca, int puntos_a_encontrar,
-                         int *npuntos  , CvPoint * valores){
-  CvPoint2D32f corners[MAX_CORNERS] = {0};
+/*******************************************************************************
+ *************Dada una marca, se busca en la imagen, y se***********************
+ ************devuelve el numero de puntos y sus posiciones**********************
+ ******************************************************************************/
+void localiza_marca (CvMat * imagen, CvMat *  marca, int puntos_a_encontrar,
+                     int *npuntos  , CvPoint * valores)
+{
   int res_width  = imagen->width  - marca->width  + 1;
   int res_height = imagen->height - marca->height + 1;
+
+  CvPoint2D32f corners[puntos_a_encontrar] = {0};
   
   //Reservamos memoria para matrices e imagen
   IplImage * resultado  = cvCreateImage( cvSize( res_width, res_height ) ,
@@ -93,17 +138,18 @@ void puntosParaTemplate (CvMat * imagen, CvMat *  marca, int puntos_a_encontrar,
   CvMat    * temp_image = cvCreateMat  ( imagen->rows, imagen->cols, CV_32FC1);
   
   // Buscamos la marca en la imagen
-  cvMatchTemplate(imagen,marca,resultado,CV_TM_CCORR_NORMED); //CV_TM_SQDIFF_NORMED); // CV_TM_SQDIFF);
+  cvMatchTemplate(imagen,marca,resultado,CV_TM_CCORR_NORMED); 
 
   // De resultado localizamos los puntos donde se han encontrado las marcas  
-  int corner_count     = puntos_a_encontrar; //MAX_CORNERS;
+  int corner_count     = puntos_a_encontrar;
   double quality_level = 0.2;
   double min_distance  = marca->width+3;
   int eig_block_size   = 12;
   int use_harris       = false; 
-  cvGoodFeaturesToTrack  ( resultado, eig_image, temp_image,
-                            corners, &corner_count, quality_level, 
-                            min_distance, NULL, eig_block_size, use_harris);
+  cvGoodFeaturesToTrack  ( resultado   , eig_image    , temp_image,
+                           corners     , &corner_count, quality_level , 
+                           min_distance, NULL         , eig_block_size, 
+                           use_harris  );
 
   //Almacenamos los resultados
   *npuntos =  corner_count;
@@ -114,33 +160,20 @@ void puntosParaTemplate (CvMat * imagen, CvMat *  marca, int puntos_a_encontrar,
   cvReleaseMat  (& temp_image);
   cvReleaseImage(&resultado);  
 }
+/******************************************************************************/
 
-// Ordenar puntos por la coordenada horizontal
-int horizontal_cmp(const void *a, const void *b)  {
-  const CvPoint *p1 = (const CvPoint *)a;
-  const CvPoint *p2 = (const CvPoint *)b;
-  if (p1->x < p2->x) return -1;
-  else if (p1->x == p2->x) return 0;
-  else return 1;
-}
 
-// Ordenar puntos por la coordenada vertical
-int vertical_cmp(const void *a, const void *b)  {
-  const CvPoint *p1 = (const CvPoint *)a;
-  const CvPoint *p2 = (const CvPoint *)b;
-  if (p1->y < p2->y) return -1;
-  else if (p1->y == p2->y) return 0;
-  else return 1;
-}
-
-// Gira el examen
+/*******************************************************************************
+ ***Abre el examen que se le indica y lo almacena en el directorio**************
+ ***ExamenesPreparados con el ángulo de giro preparado**************************
+ ******************************************************************************/
 void prepararImagen (char * nombreExamen, int examen, int pagina){
 
   char nombre_fichero_salida [MAX_LEN_FILENAME];
 
-  CvMat* pagina_examen    = cvLoadImageM(nombreExamen, CV_LOAD_IMAGE_GRAYSCALE);  
-  CvMat* pagina_preparada = cvLoadImageM(nombreExamen, CV_LOAD_IMAGE_GRAYSCALE);  
-  CvMat* marca_horizontal = cvLoadImageM("itemH.jpg" , CV_LOAD_IMAGE_GRAYSCALE);
+  CvMat* pagina_examen    = cvLoadImageM(nombreExamen    , CV_LOAD_IMAGE_GRAYSCALE);  
+  CvMat* pagina_preparada = cvLoadImageM(nombreExamen    , CV_LOAD_IMAGE_GRAYSCALE);  
+  CvMat* marca_horizontal = cvLoadImageM(MARCA_HORIZONTAL, CV_LOAD_IMAGE_GRAYSCALE);
 
   CvMat*       matriz_rotacion = cvCreateMat ( 2 , 3 , CV_32F);
   CvPoint2D32f centro          = cvPoint2D32f( pagina_examen->width/2, pagina_examen->height/2 );
@@ -154,7 +187,7 @@ void prepararImagen (char * nombreExamen, int examen, int pagina){
 
   //debugWindow(&parte_examen_inferior);
 
-  puntosParaTemplate (& parte_examen_inferior , marca_horizontal, 2 ,&npuntos, pos);
+  localiza_marca (& parte_examen_inferior , marca_horizontal, 2 ,&npuntos, pos);
   
   float ang_rad = 0;
   float degrees = 0;  
@@ -180,28 +213,28 @@ void prepararImagen (char * nombreExamen, int examen, int pagina){
   printf("prepararImagen: %s examen %d pagina %d giro %2.2f \n",nombreExamen,examen,pagina,degrees);
 }
 
-// Lee un fichero
+/*****Lee una pagina de examen y devuelve la localizacion de las respuestas****/
 int leePaginaExamen (char * nombreExamen, CvRect rectangulo, 
                       int n_items        , ResultadoPagina rp ){
   printf("leePaginaExamen %s \n",nombreExamen);
   CvMat* pagina_examen   = cvLoadImageM(nombreExamen, CV_LOAD_IMAGE_GRAYSCALE);
-  CvMat* itemP    = cvLoadImageM("itemP.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+  CvMat* itemP    = cvLoadImageM(MARCA_PREGUNTA, CV_LOAD_IMAGE_GRAYSCALE);
     
   int npuntosRes;
-  CvPoint posRes [MAX_CORNERS] = {0};
+  CvPoint posRes [n_items] = {0};
     
   CvMat  parte_examen_preguntas;
   cvGetSubRect(pagina_examen,&parte_examen_preguntas, rectangulo);
   //debugWindow(&parte_examen_preguntas);
   
-  puntosParaTemplate (&parte_examen_preguntas, itemP, n_items , &npuntosRes, posRes);  
+  localiza_marca (&parte_examen_preguntas, itemP, n_items , &npuntosRes, posRes);  
   qsort(  posRes, npuntosRes, sizeof(CvPoint ), vertical_cmp);
 
   for (int i=0; i < npuntosRes; i++) {
     CvRect rect = cvRect( rectangulo.x+posRes[i].x+4, rectangulo.y+posRes[i].y+8, 12, 15 );  
     rp.puntos[i].x = rectangulo.x+posRes[i].x;
     rp.puntos[i].y = rectangulo.y+posRes[i].y;
-    if (estaMarcada( pagina_examen , rect )) rp.marcado[i] = 1;
+    if (esta_marcada( pagina_examen , rect )) rp.marcado[i] = 1;
   }
 
   cvReleaseMat(&pagina_examen);
@@ -349,11 +382,6 @@ int readFile(FILE * f, Examen ex , ResultadoPagina * rp){
 }
 /******************************************************************************/
 
-int cstring_cmp(const void *a, const void *b){ 
-  const char **ia = (const char **)a;
-  const char **ib = (const char **)b;
-  return strcmp(*ia, *ib);
-}
 
 
 void configuraControl1(Examen * ex){
