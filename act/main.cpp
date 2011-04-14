@@ -221,7 +221,7 @@ int leePaginaExamen (char * nombreExamen, CvRect rectangulo,
 /*******************************************************************************
  ***********************Sistema de correcion de examen**************************
  ******************************************************************************/
-void corrijeExamen (Examen ex, int examen, ResultadoPagina * rp){
+void corrigeExamen (Examen ex, int examen, ResultadoPagina * rp){
   float nota=0;
   float notap=0;
   int respuesta_contestada=-1;
@@ -524,7 +524,7 @@ int main( int argc, char** argv ){
     }
 
   struct Examen ex; 
-  configuraControl1(&ex);
+  configuraControl2(&ex);
 
   
   
@@ -604,39 +604,14 @@ int main( int argc, char** argv ){
     
     continua_fichero = readFile (registroPuntos,ex,rp);
     for (int j = 0; continua_fichero  ; j++) {     
-      corrijeExamen(ex, j/ex.n_paginas,rp);     
+      if ( (j+1) % ex.n_paginas == 0) corrigeExamen(ex, j/ex.n_paginas,rp);     
       continua_fichero = readFile (registroPuntos,ex,rp);
     }
     
     fclose(registroPuntos);
   }
   
-  /*
-
-  for (int j = 0; j< numero_ficheros  ; j++) {
-    //Comenzamos a leer un examen
-    if ( j % ex.n_paginas == 0)   printf("Examen n: %d \n",j/ex.n_paginas);
-    sprintf(file,"./ExamenesOriginal/%s\0",ficheros[j]);
-
-    if (flagL) leePaginaExamen(file,ex.origen[j%ex.n_paginas], ex.destino[j%ex.n_paginas] , ex.n_items[j%ex.n_paginas] ,rp[j%ex.n_paginas]);
-
-    //Termino de extraer puntos de un examen entero
-    if ( (j+1) % ex.n_paginas == 0)  {
-      if (flagL) {
-	writeFile(registroPuntos,ex,rp);
-	fflush(registroPuntos);
-      }
-      else readFile (registroPuntos,ex,rp);
-          
-      corrijeExamen(ex, j/ex.n_paginas,rp);
-      for (int j = 0; j< ex.n_paginas; j++) {
-	free(rp[j].marcado );
-	rp[j].marcado = (int *) calloc(ex.n_items [j] , sizeof(int));
-      }
-
-    }
-  }
-*/
+  
 
   return 0;
 }
