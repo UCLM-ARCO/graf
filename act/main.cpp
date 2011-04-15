@@ -254,7 +254,7 @@ int leePaginaExamen (char * nombreExamen, CvRect rectangulo,
 /*******************************************************************************
  ***********************Sistema de correcion de examen**************************
  ******************************************************************************/
-void corrigeExamen (Examen ex, int examen, ResultadoPagina * rp){
+void corrijeExamen (Examen ex, int examen, ResultadoPagina * rp){
   float nota=0;
   float notap=0;
   int respuesta_contestada=-1;
@@ -651,7 +651,7 @@ int main( int argc, char** argv ){
       
     continua_fichero = readFile (registroPuntos,ex,rp);
     for (int j = 0; continua_fichero  ; j++) {     
-      if ( (j+1) % ex.n_paginas == 0) corrigeExamen(ex, j/ex.n_paginas,rp);     
+      if ( (j+1) % ex.n_paginas == 0) corrijeExamen(ex, j/ex.n_paginas,rp);     
       continua_fichero = readFile (registroPuntos,ex,rp);
     }
     
