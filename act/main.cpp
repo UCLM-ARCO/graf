@@ -19,7 +19,7 @@
 #define MARCA_PREGUNTA   "itemP.jpg"
 #define MAX_FILES 1000
 #define MAX_LEN_FILENAME 255
-
+#define MAX_INCIDENCIAS_MANUALES 1000
 
 void debugWindow( CvMat * c ){
   IplImage stub, *dst_img;
@@ -592,8 +592,8 @@ int main( int argc, char** argv ){
       exit(1);
     }
     
-    FILE * registro_incidencias;
-    if((registro_incidencias = fopen("registroIncidencias.txt", "wb"))==NULL) {
+    FILE * registro_incidencias_lecturas;
+    if((registro_incidencias_lecturas = fopen("registroIncidenciasLecturas.txt", "wb"))==NULL) {
       printf("Cannot open file.\n");
       exit(1);
     }
@@ -607,7 +607,7 @@ int main( int argc, char** argv ){
       fflush(registroPuntos);      
       
       if (items_capturados) 
-        fprintf(registro_incidencias,"Incidencia en examen %d pagina %d: Items encontrados %d de %d \n\0", j/ex.n_paginas,(j%ex.n_paginas)+1,items_capturados, ex.n_items[j%ex.n_paginas]);
+        fprintf(registro_incidencias_lecturas,"Incidencia en examen %d pagina %d: Items encontrados %d de %d \n\0", j/ex.n_paginas,(j%ex.n_paginas)+1,items_capturados, ex.n_items[j%ex.n_paginas]);
       
       
       if ( (j+1) % ex.n_paginas == 0)  {
@@ -618,18 +618,37 @@ int main( int argc, char** argv ){
       }
     }
     fclose(registroPuntos);
-    fclose(registro_incidencias);
+    fclose(registro_incidencias_lecturas);
   }
   
   
   //Correccion de examenes
   int continua_fichero;
   if (flagC) {
+  
+    FILE * registro_incidencias_correcion;
+    if((registro_incidencias_correcion = fopen("registroIncidenciasCorreccion.txt", "wb"))==NULL) {
+      printf("Cannot open file.\n");
+      exit(1);
+    }
+    
+ /*   FILE * registro_correcion_manual;
+    if((registro_correcion_manual = fopen("correccionManual.txt", "rb"))==NULL) {
+      printf("Cannot open file.\n");
+      exit(1);
+    } else {
+      incidencias_manuales [MAX_INCIDENCIAS_MANUALES];
+      
+    }
+   */ 
+    
+    
     if((registroPuntos = fopen("registroPuntos.txt", "rb"))==NULL) {
       printf("Cannot open file.\n");
       exit(1);
     }
     
+      
     continua_fichero = readFile (registroPuntos,ex,rp);
     for (int j = 0; continua_fichero  ; j++) {     
       if ( (j+1) % ex.n_paginas == 0) corrigeExamen(ex, j/ex.n_paginas,rp);     
