@@ -37,13 +37,18 @@ void debugWindow( CvMat * c ){
 #define N_ITEMS_MAX 100
 struct Examen { 
   int n_paginas;
-  int n_items           [N_PAGINAS_MAX];
-  int respuestas        [N_PAGINAS_MAX][N_ITEMS_MAX];
-  int itemsPregunta     [N_PAGINAS_MAX][N_ITEMS_MAX];
-  CvRect pos_respuestas [N_PAGINAS_MAX];
+  int n_items            [N_PAGINAS_MAX];
+  int respuestas         [N_PAGINAS_MAX][N_ITEMS_MAX];
+  int itemsPregunta      [N_PAGINAS_MAX][N_ITEMS_MAX];
+  CvRect pos_respuestas  [N_PAGINAS_MAX];
 };
 /******************************************************************************/
 
+struct IncidenciaManual { 
+  int examen;
+  int pregunta;
+  int respuesta;
+};
 
 /*******************************************************************************
  ******Estructura de datos para informacion de marcas***************************
@@ -129,7 +134,7 @@ void localiza_marca (CvMat * imagen, CvMat *  marca, int puntos_a_encontrar,
   int res_width  = imagen->width  - marca->width  + 1;
   int res_height = imagen->height - marca->height + 1;
 
-  CvPoint2D32f corners[puntos_a_encontrar] = {0};
+  CvPoint2D32f corners[puntos_a_encontrar]; //= {0};
   
   //Reservamos memoria para matrices e imagen
   IplImage * resultado  = cvCreateImage( cvSize( res_width, res_height ) ,
@@ -221,7 +226,7 @@ int leePaginaExamen (char * nombreExamen, CvRect rectangulo,
   CvMat* itemP    = cvLoadImageM(MARCA_PREGUNTA, CV_LOAD_IMAGE_GRAYSCALE);
     
   int npuntosRes;
-  CvPoint posRes [n_items] = {0};
+  CvPoint posRes [n_items] ; //= {0};
     
   CvMat  parte_examen_preguntas;
   cvGetSubRect(pagina_examen,&parte_examen_preguntas, rectangulo);
@@ -254,16 +259,20 @@ int leePaginaExamen (char * nombreExamen, CvRect rectangulo,
 /*******************************************************************************
  ***********************Sistema de correcion de examen**************************
  ******************************************************************************/
-void corrijeExamen (Examen ex, int examen, ResultadoPagina * rp){
+int ** corrijeExamen (Examen ex, int examen, ResultadoPagina * rp, int ** respuesta_conflicto){
   float nota=0;
   float notap=0;
   int respuesta_contestada=-1;
   int n_paginas = ex.n_paginas;
   int num_pregunta;
   int num_pregunta_ant=0;
-    
-     
+  
+  
+  
+
   for (int p = 0 ; p < n_paginas; p++) {      
+    respuesta_conflicto [p] = (int *) calloc(ex.n_items [p] , sizeof(int));
+    
     for (int i=0; i < ex.n_items[p] ;i++) {
             
       //Controlamos que una pregunta se haya contestado solo una vez para sumar
@@ -279,7 +288,9 @@ void corrijeExamen (Examen ex, int examen, ResultadoPagina * rp){
       if (rp[p].marcado[i] == 1) {
 	// Y ya habia una respuesta para esta pregunta....
 	if (respuesta_contestada == ex.itemsPregunta[p][i]) {
-	  printf ("  !! Correcion !! Incidente en examen %d pagina %d respuesta %d \n ",examen,p,respuesta_contestada);
+  	  respuesta_conflicto[p][i]=1;
+	  printf ("  !! Correcion !! Incidente en examen %d pagina %d respuesta %d \n "
+	             ,examen,p,respuesta_contestada);
 	  notap=0;
 	}
 	else {
@@ -344,8 +355,8 @@ void corrijeExamen (Examen ex, int examen, ResultadoPagina * rp){
  
 
           
-/*******************************************************************************
- ****************Almacenamiento de marcas en ficheros***************************
+/******************************************************************************
+ ****************Almacenamiento de marcas en ficheros**************************
  ******************************************************************************/
 void writeFile(FILE * f, Examen ex , ResultadoPagina * rp){
   fwrite(&ex.n_paginas, sizeof(int), 1, f);
@@ -383,7 +394,9 @@ int readFile(FILE * f, Examen ex , ResultadoPagina * rp){
 /******************************************************************************/
 
 
-
+/*******************************************************************************
+ ****************Configuracion temporal de examenes*****************************
+ ******************************************************************************/
 void configuraControl1(Examen * ex){
   ex->n_paginas = 5;
   ex->n_items [0]  = 24;
@@ -428,9 +441,12 @@ void configuraControl1(Examen * ex){
 
   ex->respuestas[4][0] = 1;
 
+  int cntPregunta=1;
   for (int p=0; p < 5 ; p++)
-    for (int i=0; i < ex->n_items [p];i++) 
-      ex->itemsPregunta[p][i] = (i/4)+1;
+    for (int i=0; i < ex->n_items [p];i++) {
+      ex->itemsPregunta[p][i]=cntPregunta;
+      if ( ((i)/4) < ((i+1)/4) )  cntPregunta++;
+    }  
 }
 
 
@@ -485,6 +501,8 @@ void configuraControl2(Examen * ex){
   ex->itemsPregunta[2][12] = 3;
   ex->itemsPregunta[2][16] = 4;
 }
+/******************************************************************************/
+
 
 void leer_directorio(const char* nombre_directorio,const char* extension, int * numero_ficheros ,char ** ficheros){
   int            tam;
@@ -495,6 +513,7 @@ void leer_directorio(const char* nombre_directorio,const char* extension, int * 
   *numero_ficheros = 0;
 
   if ((directorio = opendir(nombre_directorio )) == NULL) {
+    printf ("Fallo al abrir %s\n", nombre_directorio);
     perror("opendir");
     return;
   }
@@ -552,7 +571,7 @@ int main( int argc, char** argv ){
     }
 
   struct Examen ex; 
-  configuraControl2(&ex);
+  configuraControl1(&ex);
 
   
   
@@ -623,6 +642,7 @@ int main( int argc, char** argv ){
   
   
   //Correccion de examenes
+  struct IncidenciaManual im [MAX_INCIDENCIAS_MANUALES];
   int continua_fichero;
   if (flagC) {
   
@@ -632,15 +652,39 @@ int main( int argc, char** argv ){
       exit(1);
     }
     
- /*   FILE * registro_correcion_manual;
-    if((registro_correcion_manual = fopen("correccionManual.txt", "rb"))==NULL) {
+    FILE * registro_correcion_manual;
+    int cnt_cadena;
+    int  contador_lineas=0;
+    if((registro_correcion_manual = fopen("correcionManual.txt", "rb"))==NULL) {
       printf("Cannot open file.\n");
       exit(1);
     } else {
-      incidencias_manuales [MAX_INCIDENCIAS_MANUALES];
+      char linea [80];
+      char *plinea;
       
+      while(fgets(linea,80,registro_correcion_manual) != NULL){
+        printf("Linea %s.\n",linea);
+        cnt_cadena=0;
+        plinea = linea;
+        while (plinea[cnt_cadena]!=',') cnt_cadena++;
+        plinea[cnt_cadena]=0;
+        im[contador_lineas].examen = atoi(plinea);
+        plinea+=cnt_cadena+1;
+        cnt_cadena = 0;
+        while (plinea[cnt_cadena]!=',') cnt_cadena++;
+        plinea[cnt_cadena]=0;
+        im[contador_lineas].pregunta = atoi(plinea);
+        plinea+=cnt_cadena+1;
+        cnt_cadena = 0;
+        while (plinea[cnt_cadena]!=',') cnt_cadena++;
+        plinea[cnt_cadena]=0;
+        im[contador_lineas].respuesta = atoi(plinea);
+        printf("Linea e %d p %d r %d.\n",im[contador_lineas].examen , im[contador_lineas].pregunta ,im[contador_lineas].respuesta );
+        contador_lineas++;
+      }
     }
-   */ 
+ 
+    
     
     
     if((registroPuntos = fopen("registroPuntos.txt", "rb"))==NULL) {
@@ -648,14 +692,38 @@ int main( int argc, char** argv ){
       exit(1);
     }
     
+    int ** respuesta_conflicto;
+    respuesta_conflicto = (int **) malloc( ex.n_paginas * sizeof(int *) );
       
     continua_fichero = readFile (registroPuntos,ex,rp);
     for (int j = 0; continua_fichero  ; j++) {     
-      if ( (j+1) % ex.n_paginas == 0) corrijeExamen(ex, j/ex.n_paginas,rp);     
+      if ( (j+1) % ex.n_paginas == 0) {
+        for (int ncm = 0; ncm <contador_lineas;ncm++ ){
+          if (im[ncm].examen == j/ex.n_paginas){
+            for(int p=0;p<ex.n_paginas;p++)
+              for (int e=0;e<ex.n_items[p];e++) 
+                if (im[ncm].pregunta == ex.itemsPregunta[p][e]) {
+                  if   (im[ncm].respuesta == 1) rp[p].marcado[e]=1;
+                  else rp[p].marcado[e]=0;
+                  im[ncm].respuesta--;
+                }        
+          }
+        }
+        
+        // Mirar ExamenesResueltos, porque si no violacion de segmento
+        corrijeExamen(ex, j/ex.n_paginas,rp,respuesta_conflicto);
+        for (int k = 0; k < ex.n_paginas;k++  )
+          for (int l = 0; l < ex.n_items[k] ;l++  )
+            if (respuesta_conflicto[k][l])
+              fprintf(registro_incidencias_correcion,"Incidencia en examen %d pagina %d: Pregunta %d \n\0", 
+                      j/ex.n_paginas,    k%ex.n_paginas,   ex.itemsPregunta [k][l]);
+       // free(respuesta_conflicto);
+      }
       continua_fichero = readFile (registroPuntos,ex,rp);
     }
     
     fclose(registroPuntos);
+    fclose(registro_incidencias_correcion);
   }
   
   
