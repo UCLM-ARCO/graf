@@ -1,30 +1,22 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-1 -*-
 
-import os, sys
-import libxml2, libxslt
-import string
-import urllib
-import random
-from types import *
+import os
+import sys
+
+import libxml2
+import libxslt
 
 
 def f_random(ctx):
     return 0
 #    return str(random.randint(1,1000))
 
-libxslt.registerExtModuleFunction("random",
-                                  "http://arco.esi.uclm.es/random",
-                                  f_random)
-
-
-
-#ROOT='/home/david/repos/graf'
-
-#rootdir = os.path.join(os.getcwd(),'db')
+libxslt.registerExtModuleFunction(
+    "random", "http://arco.esi.uclm.es/random", f_random)
 
 ROOT = os.path.dirname(__file__)
-print ROOT
+print "graf dir:", ROOT
 
 
 #generar en XML el examen solicitado para el alumno peticionario
@@ -41,29 +33,26 @@ def generate_exam(examFname, sate_info, exam_part, solution):
 
     params = {}
     params['rootdir'] = '"' + os.getcwd() + '/"'
-    #params['rootdir'] = '"' + '/home/dvilla/proy/graf/db/ARedes/' + '"'
     params['setuser'] = '"' + user + '"'
     params['setpass'] = '"' + password + '"'
 #    params['setcourse'] = '"' + course + '"'
 #    params['setexam'] = '"' + exam + '"'
     params['part'] = '"%d"' % exam_part
 
-    if solution: params['solution'] = '"1"'
-
+    if solution:
+        params['solution'] = '"1"'
 
     try:
         doc = libxml2.parseFile(examFname)
     except libxml2.parserError, e:
-        print >>sys.stderr, "ERROR: Al parsear el fichero '%s'" % (path)
+        print >> sys.stderr, "ERROR: Al parsear el fichero '%s': %s" % (path, e)
         os.system('rxp -xs ' + path)
         sys.exit(2)
 
     result = style.applyStylesheet(doc, params)
-    #dir(style)
-
     xmldoc = style.saveResultToString(result)
 
-    print xmldoc
+#    print xmldoc
 
     style.freeStylesheet()
     doc.freeDoc()
@@ -77,7 +66,7 @@ def generate_exam(examFname, sate_info, exam_part, solution):
 
 def generate_latex_view(cad):
 
-    styledoc = libxml2.parseFile(os.path.join(ROOT, 'xsl', 'latex_view_mark.xsl'))
+    styledoc = libxml2.parseFile(os.path.join(ROOT, 'xsl', 'latex_view.xsl'))
     style = libxslt.parseStylesheetDoc(styledoc)
 
     doc =  libxml2.parseMemory(cad, len(cad))
@@ -115,8 +104,6 @@ def string_before(cad, sub):
 
 
 def main():
-
-
     solution = False
 
     if len(sys.argv) == 1:
@@ -135,7 +122,6 @@ def main():
 
     examFname = args[0]
 
-
     info = {}
     info['sate:user'] = 'alumno'
     info['sate:pass'] = 'pass'
@@ -144,11 +130,9 @@ def main():
 
     #examFname = os.path.join(rootdir, asignatura, 'exam', examen_id + '.xml')
 
-
     if not os.path.exists(examFname):
         print >>sys.stderr, "ERROR: No existe el fichero '%s'" % examFname
         return 1
-
 
     partes = get_parts(examFname)
 
@@ -158,7 +142,7 @@ def main():
 
     tex = []
     for p in range(len(partes)):
-        xml_exam = generate_exam(examFname, info, p+1, solution)
+        xml_exam = generate_exam(examFname, info, p + 1, solution)
         latex_exam = generate_latex_view(xml_exam)
 
         fname = "%s-%s.tex" % (base, partes[p])
@@ -168,8 +152,7 @@ def main():
         fd.write(latex_exam)
         fd.close()
 
-
-    print 'compiling docs...'
+    print 'compilation:'
     for fname in tex:
         print 'Compiling...', fname,
         retval = os.system('pdflatex --interaction=batchmode "%s" >> /dev/null' % fname)
@@ -179,7 +162,7 @@ def main():
             os.system('pdflatex --interaction=batchmode "%s" >> /dev/null' % fname)
             print
 
-    print 'FIN'
+    print 'end'
 
 
 main()
