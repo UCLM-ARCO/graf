@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<qset>
+
+  <question id="single-choice">
+    <p>Pregunta de elección única.</p>
+    <p>Elije una de las siguientes:</p>
+    <item>1</item>
+    <item answer="yes">2</item>
+    <item>3</item>
+  </question>
+
+  <question id="free-text">
+    <p>Excribe un párrafo libre:</p>
+    <freetext rows="3">
+      Respuesta correcta (de 3 líneas supuestamente).
+    </freetext>
+  </question>
+
+  <question id="numeric">
+    <p>Escribe un número de 5 cifras como máximo:</p>
+    <number size="5" unit="iteraciones">4</number>
+  </question>
+
+  <question id="two-parts-numeric">
+    <p>Enunciado general</p>
+    <part>
+      <p>Enunciado de la primera parte:</p>
+      <number size="5" unit="unidades"/>
+    </part>
+    <part>
+      <p>Enunciado de la segunda parte</p>
+      <number size="5"/>
+    </part>
+  </question>
+
+  <question id="multicolumn" multicol="yes">
+    <p>Una pregunta con muchas opciones:</p>
+    <item answer="yes">1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+    <item>6</item>
+    <item>7</item>
+    <item>8</item>
+    <item>9</item>
+  </question>
+
+  <question id="6">
+    <part>
+      <text>¿Qué editor prefieres?</text>
+      <item>emacs</item>
+      <item>vi</item>
+      <item>otro. Indicar:
+	<freetext rows="2"/>
+      </item>
+    </part>
+    <part>
+      <text>¿Por qué motivo?</text>
+      <freetext rows="4"/>
+    </part>
+  </question>
+
+  <question id="7">
+    <text>
+      ¿Qué herramientas necesitas para hacer el estudio de cubrimiento
+      de un programa? (Marca con un X).
+    </text>
+    <item>gcc</item>
+    <item>gdb</item>
+    <item>make</item>
+    <item>gprof</item>
+    <item>strace</item>
+    <item>gcov</item>
+    <item>otras:
+      <freetext rows="4"/>
+    </item>
+  </question>
+
+</qset>

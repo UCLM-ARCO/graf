@@ -3,8 +3,8 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:exsl="http://exslt.org/common"
   extension-element-prefixes="exsl"
-  xmlns:random="http://arco.esi.uclm.es/random"
-  xsl:exclude-result-prefixes="random">
+  xmlns:commodity="http://arco.esi.uclm.es/commodity"
+  xsl:exclude-result-prefixes="commodity">
 
 
   <xsl:output
@@ -17,13 +17,15 @@
   <!-- pass through -->
   <xsl:template match="instructions|instructions/*|identification|
                        part|
-                       text|option|option/@*|option/*|item|
+                       item|
                        extra|
                        number|number/@*|
-                       ul|li|p|code|code/@*|
+                       text|p|ul|li|
                        em|b|tt|
+		       code|code/@*|
                        screen|
-                       figure|figure/@*">
+                       figure|figure/@*|
+		       answer">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
@@ -38,7 +40,7 @@
   <xsl:param name="setpass"/>
   <xsl:param name="setcourse"/>
   <xsl:param name="setexam"/>
-  <xsl:param name="solution"/>
+  <xsl:param name="print_answers"/>
   <xsl:param name="part"/>
 
 
@@ -56,6 +58,7 @@
       id="{$setexam}"
       user="{$setuser}" pass="{$setpass}"
       from="{/exam/@from}"
+      print_answers="{$print_answers}"
       >
 
       <xsl:if test="count(/exam/@show_points)">
@@ -74,10 +77,16 @@
 
       <xsl:attribute name="course">
 <!--
-	<xsl:value-of select="document(concat($rootdir, '/',
-	$setcourse,'/','data.xml'))/subject/@name"/>
+	<xsl:value-of select="document(concat($rootdir, '/',$setcourse,'/','data.xml'))/subject/@name"/>
 -->
-        <xsl:value-of select="document(concat($rootdir, '/','data.xml'))/subject/@name"/>
+      <xsl:choose>
+        <xsl:when test="commodity:file-exists(concat($rootdir,'/','data.xml'))">
+          <xsl:value-of select="document(concat($rootdir,'/','data.xml'))/subject/@name"/>
+        </xsl:when>
+	<xsl:otherwise>
+	  <xsl:value-of select="/exam/subject/@name"/>
+	</xsl:otherwise>
+      </xsl:choose>
 
       </xsl:attribute>
       <xsl:apply-templates/>
@@ -89,54 +98,27 @@
     <xsl:variable name="ref" select="@id"/>
     <xsl:element name="question">
       <xsl:attribute name="order">
-	<xsl:value-of select="random:random()"/>
+	<xsl:value-of select="commodity:random()"/>
       </xsl:attribute>
       <xsl:copy-of select="@*"/>
       <xsl:copy-of select="document(concat($rootdir, ./@topic,'.xml'))/qset/question[@id=$ref]/@*"/>
-      <xsl:apply-templates select="document(concat($rootdir,
-      ./@topic,'.xml'))/qset/question[@id=$ref]/*"/>
+      <xsl:apply-templates select="document(concat($rootdir, ./@topic,'.xml'))/qset/question[@id=$ref]/*"/>
     </xsl:element>
-  </xsl:template>
-
-  <xsl:template match="answer/item">
-    Error: hoja exam_gen.xsl, plantilla answer/item
   </xsl:template>
 
   <xsl:template match="item/@*">
-    <xsl:if test="name()='answer' and $solution">
-      <xsl:copy-of select="."/>
-    </xsl:if>
+    <xsl:copy-of select="."/>
   </xsl:template>
 
   <xsl:template match="freetext">
-    <xsl:element name="freetext">
-      <xsl:copy-of select="@*"/>
-      <xsl:if test="$solution">
-        <xsl:copy-of select="answer"/>
-      </xsl:if>
-    </xsl:element>
+    <xsl:copy-of select="."/>
   </xsl:template>
 
   <xsl:template match="freecode">
-    <xsl:choose>
-      <xsl:when test="$solution">
-        <xsl:copy-of select="answer"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:element name="freetext">
-          <xsl:copy-of select="@*"/>
-        </xsl:element>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:element name="freetext">
+      <xsl:copy-of select="@*"/>
+      <xsl:copy-of select="answer"/>
+    </xsl:element>
   </xsl:template>
-
-
-  <xsl:template match="answer">
-    <xsl:if test="$solution">
-      <xsl:copy-of select="."/>
-    </xsl:if>
-  </xsl:template>
-
 
 </xsl:stylesheet>
-

@@ -1,63 +1,70 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <qset>
 
+  <question id="single-choice">
+    <text>Elije 2:</text>
+    <item>1</item>
+    <item answer="yes">2</item>
+    <item>3</item>
+  </question>
+
   <question id="1">
-    <text>¿Qué Makefile es genera a.out a partir de a.c?</text>
-    <option>
+    <text>Â¿QuÃ© Makefile genera a.out a partir de a.c?</text>
+    <item>
       <code>
 	all:
 	     $(CC) a.out
       </code>
-    </option>
-    <option>
+    </item>
+    <item>
       <code>
 	%.out: %.o
 	%.o: %.c
       </code>
-    </option>
-    <option>
+    </item>
+    <item>
       <code>
 	a.c: a.out
       </code>
-    </option>
+    </item>
   </question>
 
-  <question id="2"> 
-    <text>¿Qué es la depuración?</text>
+  <question id="2">
+    <text>Â¿QuÃ© es la depuraciÃ³n?</text>
     <freetext rows="3"/>
-  </question>    
+  </question>
 
   <question id="3">
-    <text>Marca la afirmación correcta:</text>
-    <option>
-      Un ejecutable con información de depuración es más rápido.
-    </option>
-    <option>
-      Un programa que use librerías dinámicas no puede contener
-      información de depuración.
-    </option>
-    <option>
-      Las librerías siempre deben contener información de depuración.
-    </option>
-    <option correct="yes">
-      La información de depuración se puede eliminar después de la
-      compilación y el enlazado
-    </option>
+    <text>Marca la afirmaciÃ³n correcta:</text>
+    <item>
+      Un ejecutable con informaciÃ³n de depuraciÃ³n es mÃ¡s rÃ¡pido.
+    </item>
+    <item>
+      Un programa que use librerÃ­as dinÃ¡micas no puede contener
+      informaciÃ³n de depuraciÃ³n.
+    </item>
+    <item>
+      Las librerÃ­as siempre deben contener informaciÃ³n de depuraciÃ³n.
+    </item>
+    <item correct="yes">
+      La informaciÃ³n de depuraciÃ³n se puede eliminar despuÃ©s de la
+      compilaciÃ³n y el enlazado
+    </item>
   </question>
 
   <question id="4">
-    <text>¿Cuántas iteraciones se ejecutan?</text>
+    <text>Â¿CuÃ¡ntas iteraciones se ejecutan?</text>
     <number size="5" unit="iteraciones" correct="4"/>
   </question>
 
   <question id="5">
     <part>
-      <text>¿Cuántos ciclos se necesitan para ejecutar la primera iteración?</text>
-      <number size="5" unit="ciclos"/> 
+      <text>Â¿CuÃ¡ntos ciclos se necesitan para ejecutar la primera iteraciÃ³n?</text>
+      <number size="5" unit="ciclos"/>
     </part>
     <part>
-      <text>¿Y la segunda?</text> 
+      <text>Â¿Y la segunda?</text>
       <number size="5" unit="ciclos"/>
     </part>
   </question>
@@ -65,22 +72,22 @@
 
   <question id="6">
     <part>
-      <text>¿Qué editor prefieres?</text>
-      <option>emacs</option>
-      <option>vi</option>
-      <option>otro. Indicar:
+      <text>Â¿QuÃ© editor prefieres?</text>
+      <item>emacs</item>
+      <item>vi</item>
+      <item>otro. Indicar:
 	<freetext rows="2"/>
-      </option>
+      </item>
     </part>
     <part>
-      <text>¿Por qué motivo?</text>
+      <text>Â¿Por quÃ© motivo?</text>
       <freetext rows="4"/>
     </part>
   </question>
 
   <question id="7">
     <text>
-      ¿Qué herramientas necesitas para hacer el estudio de cubrimiento
+      Â¿QuÃ© herramientas necesitas para hacer el estudio de cubrimiento
       de un programa? (Marca con un X).
     </text>
     <item>gcc</item>
@@ -92,8 +99,6 @@
     <item>otras:
       <freetext rows="4"/>
     </item>
-  </question> 
+  </question>
 
 </qset>
-
-

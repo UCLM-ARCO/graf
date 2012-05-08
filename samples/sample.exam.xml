@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<exam title="Sesión 1" from="20031202">
+  <subject name="Ejemplo de uso GRAF con arco-exam"/>
+
+  <part>
+    <instructions>
+      Este examen consta de <numquestions/> ejercicios con un total de
+      <numpoints/> puntos.
+    </instructions>
+
+    <identification/>
+
+    <question topic="samples" id="single-choice" grade="1"/>
+    <question topic="samples" id="free-text" grade="1"/>
+    <question topic="samples" id="numeric" grade="1"/>
+    <question topic="samples" id="two-parts-numeric" grade="1"/>
+    <question topic="samples" id="multicolumn" grade="1"/>
+
+  </part>
+</exam>
