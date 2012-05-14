@@ -154,7 +154,7 @@
 
   <xsl:template name="first-item">
     <xsl:if test="position()=1">
-      <xsl:text>\vspace{0.2cm}</xsl:text>
+      <xsl:text>\vspace{0.2cm}&#10;</xsl:text>
     </xsl:if>
   </xsl:template>
 
@@ -162,7 +162,7 @@
     <xsl:call-template name="first-item"/>
     <xsl:text>    \choice{</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>}&#10;</xsl:text>
+    <xsl:text>\mbox{}}&#10;</xsl:text>
   </xsl:template>
 
   <xsl:template match="item[@answer]">
@@ -216,6 +216,7 @@
     \arcoSolutionorbox{<xsl:value-of select="./@rows"/>}{
     <xsl:apply-templates/>
     }
+    \vspace{0.2cm}
   </xsl:template>
 
   <!-- elementos de formato -->
