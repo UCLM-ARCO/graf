@@ -77,7 +77,7 @@
     <xsl:choose>
       <xsl:when test="$multicol">
 	<xsl:text>
-	  \vspace{-12pt}
+	  \vspace{-0.2cm}
 \begin{multicols}{2}
 	</xsl:text>
       </xsl:when>
@@ -144,7 +144,7 @@
   </xsl:template>
 
   <xsl:template name="par">
-    <xsl:text>\mbox{} \\[-0.7cm] &#10;</xsl:text>
+    <xsl:text>&#10;&#10;</xsl:text>
   </xsl:template>
 
   <xsl:template match="option">
