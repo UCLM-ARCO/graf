@@ -4,6 +4,7 @@
 import os
 import sys
 import logging
+import argparse
 
 import libxml2
 import libxslt
@@ -74,7 +75,6 @@ def generate_exam(examFname, sate_info, exam_part, print_answers):
 
 
 def generate_latex_view(cad):
-
     styledoc = libxml2.parseFile(os.path.join(ROOT, 'xsl', 'latex_view.xsl'))
     style = libxslt.parseStylesheetDoc(styledoc)
 
@@ -117,45 +117,40 @@ def string_before(cad, sub):
 
 
 def main():
-    print_answers = False
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--answers', action='store_true',
+                        help='Generate solved exam')
+    parser.add_argument('--clean', action='store_true',
+                        help='remove generated files')
+    parser.add_argument('exam',
+                        help='your-file.exam.xml')
 
-    if len(sys.argv) == 1:
-        print 'Sintaxis: mkexam <clean | [--answers] file.exam.xml>'
-        sys.exit(1)
+    config = parser.parse_args()
 
-    if sys.argv[1] == 'clean':
-        os.system('rm *.tex *.aux *.log *.pdf *.out')
+    if config.clean:
+        logging.info("Cleaning previously generated files")
+        os.system('rm -v *.tex *.aux *.log *.pdf *.out')
+
+    if not os.path.exists(config.exam):
+        logging.error("ERROR: No existe el fichero '%s'" % config.exam)
         return 1
 
-    if sys.argv[1] == '--answers':
-        print_answers = True
-        args = sys.argv[2:]
-    else:
-        args = sys.argv[1:]
+    process_parts(config.exam, config.answers)
 
-    examFname = args[0]
 
+def process_parts(exam, answers):
     info = {}
     info['sate:user'] = 'alumno'
     info['sate:pass'] = 'pass'
 #    info['sate:course'] = asignatura
 #    info['sate:exam'] = examen_id
 
-    #examFname = os.path.join(rootdir, asignatura, 'exam', examen_id + '.xml')
+    base = string_before(exam, '.')
+    exam_parts = get_parts(exam)
 
-    if not os.path.exists(examFname):
-        print >>sys.stderr, "ERROR: No existe el fichero '%s'" % examFname
-        return 1
-
-    partes = get_parts(examFname)
-
-    base = string_before(examFname, '.')
-
-    #os.environ['TEXMFOUTPUT'] = os.path.join(os.getcwd(), 'output')
-
-    tex = []
-    for p, part in enumerate(partes):
-        xml_exam = generate_exam(examFname, info, p + 1, print_answers)
+    tex_filenames = []
+    for p, part in enumerate(exam_parts):
+        xml_exam = generate_exam(exam, info, p + 1, answers)
         latex_exam = generate_latex_view(xml_exam)
 
         fname = base
@@ -163,15 +158,14 @@ def main():
             fname += '-%s' % part
         fname += '.tex'
 
-        tex.append(fname)
-        print 'rendering %s (%s)...' % (examFname, part)
-        fd = open(fname, 'wt')
-        fd.write(latex_exam)
-        fd.close()
+        tex_filenames.append(fname)
 
-    for fname in tex:
+        logging.info('rendering %s (%s)...', exam, part)
+        with file(fname, 'wt') as fd:
+            fd.write(latex_exam)
+
+    for fname in tex_filenames:
         retval = os.system('MAIN=%s make -f /usr/include/arco/latex.mk' % fname)
-#        retval = os.system('rubber --pdf "%s" >> /dev/null' % fname)
         if retval:
             print ' [== ERROR ==] '
 
