@@ -170,18 +170,10 @@ def main():
         fd.close()
 
     for fname in tex:
-        retval = os.system('rubber --pdf "%s" >> /dev/null' % fname)
+        retval = os.system('MAIN=%s make -f /usr/include/arco/latex.mk' % fname)
+#        retval = os.system('rubber --pdf "%s" >> /dev/null' % fname)
         if retval:
             print ' [== ERROR ==] '
-
-        continue
-
-        retval = os.system('pdflatex --interaction=batchmode "%s" >> /dev/null' % fname)
-        if retval:
-            print ' [== ERROR ==] '
-        else:
-            os.system('pdflatex --interaction=batchmode "%s" >> /dev/null' % fname)
-            print
 
     print 'done'
 

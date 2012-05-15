@@ -17,9 +17,10 @@
   <!-- pass through -->
   <xsl:template match="instructions|instructions/*|identification|
                        part|
-                       item|
-                       extra|
+                       item|item/@*|
                        number|number/@*|
+		       freetext|fretext/@*|
+                       extra|
                        text|p|ul|li|
                        em|b|tt|
 		       code|code/@*|
@@ -106,6 +107,7 @@
     </xsl:element>
   </xsl:template>
 
+<!--
   <xsl:template match="item/@*">
     <xsl:copy-of select="."/>
   </xsl:template>
@@ -113,6 +115,7 @@
   <xsl:template match="freetext">
     <xsl:copy-of select="."/>
   </xsl:template>
+-->
 
   <xsl:template match="freecode">
     <xsl:element name="freetext">

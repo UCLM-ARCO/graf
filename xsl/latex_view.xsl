@@ -165,7 +165,7 @@
     <xsl:text>\mbox{}}&#10;</xsl:text>
   </xsl:template>
 
-  <xsl:template match="item[@answer]">
+  <xsl:template match="item[@answer]|item[@value]">
     <xsl:call-template name="first-item"/>
     <xsl:text>    \correctChoice{</xsl:text>
     <xsl:apply-templates/>
