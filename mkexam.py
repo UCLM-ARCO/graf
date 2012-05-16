@@ -3,8 +3,10 @@
 
 import os
 import sys
-import logging
 import argparse
+import logging
+
+logging.getLogger().setLevel(logging.DEBUG)
 
 import libxml2
 import libxslt
@@ -26,31 +28,22 @@ libxslt.registerExtModuleFunction(
 
 
 ROOT = os.path.dirname(__file__)
-print "graf dir:", ROOT
+logging.info("graf dir: %s", ROOT)
 
 
 #generar en XML el examen solicitado para el alumno peticionario
-def generate_exam(examFname, sate_info, exam_part, print_answers):
+def generate_exam(examFname, exam_part, answers):
 
     # FIXME: comprobar que existen estos campos
-    user = sate_info['sate:user']
-    password = sate_info['sate:pass']
-#    course = sate_info['sate:course']
-#    exam = sate_info['sate:exam']
-
     styledoc = libxml2.parseFile(os.path.join(ROOT, 'xsl', 'exam_gen.xsl'))
     style = libxslt.parseStylesheetDoc(styledoc)
 
     params = {}
     params['rootdir'] = '"' + os.getcwd() + '/"'
-    params['setuser'] = '"' + user + '"'
-    params['setpass'] = '"' + password + '"'
-#    params['setcourse'] = '"' + course + '"'
-#    params['setexam'] = '"' + exam + '"'
     params['part'] = '"%d"' % exam_part
 
-    if print_answers:
-        params['print_answers'] = '"1"'
+    if answers:
+        params['answers'] = '"1"'
 
     try:
         doc = libxml2.parseFile(examFname)
@@ -122,14 +115,17 @@ def main():
                         help='Generate solved exam')
     parser.add_argument('--clean', action='store_true',
                         help='remove generated files')
-    parser.add_argument('exam',
+    parser.add_argument('exam', nargs='?',
                         help='your-file.exam.xml')
 
     config = parser.parse_args()
 
     if config.clean:
         logging.info("Cleaning previously generated files")
-        os.system('rm -v *.tex *.aux *.log *.pdf *.out')
+        os.system('rm -v *.tex *.aux *.log *.pdf *.out 2> /dev/null')
+    elif not config.exam:
+        parser.print_help()
+        return 1
 
     if not os.path.exists(config.exam):
         logging.error("ERROR: No existe el fichero '%s'" % config.exam)
@@ -139,18 +135,12 @@ def main():
 
 
 def process_parts(exam, answers):
-    info = {}
-    info['sate:user'] = 'alumno'
-    info['sate:pass'] = 'pass'
-#    info['sate:course'] = asignatura
-#    info['sate:exam'] = examen_id
-
     base = string_before(exam, '.')
     exam_parts = get_parts(exam)
 
     tex_filenames = []
     for p, part in enumerate(exam_parts):
-        xml_exam = generate_exam(exam, info, p + 1, answers)
+        xml_exam = generate_exam(exam, p + 1, answers)
         latex_exam = generate_latex_view(xml_exam)
 
         fname = base
@@ -169,7 +159,7 @@ def process_parts(exam, answers):
         if retval:
             print ' [== ERROR ==] '
 
-    print 'done'
+    logging.info('done')
 
 
 main()

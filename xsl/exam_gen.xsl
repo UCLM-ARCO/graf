@@ -37,11 +37,7 @@
 -->
 
   <xsl:param name="rootdir"/>
-  <xsl:param name="setuser"/>
-  <xsl:param name="setpass"/>
-  <xsl:param name="setcourse"/>
-  <xsl:param name="setexam"/>
-  <xsl:param name="print_answers"/>
+  <xsl:param name="answers"/>
   <xsl:param name="part"/>
 
 
@@ -56,10 +52,9 @@
 
   <xsl:template name="gen_exam">
     <exam_view
-      id="{$setexam}"
-      user="{$setuser}" pass="{$setpass}"
+      id=""
       from="{/exam/@from}"
-      print_answers="{$print_answers}"
+      answers="{$answers}"
       >
 
       <xsl:if test="count(/exam/@show_points)">

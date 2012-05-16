@@ -21,7 +21,7 @@
 \arcoExamDesc{</xsl:text><xsl:value-of select="@title"/><xsl:text>}
 \arcoExamDate{</xsl:text><xsl:call-template name="date"/><xsl:text>}</xsl:text>
 
-    <xsl:if test="@print_answers='1'">\printanswers</xsl:if>
+    <xsl:if test="@answers='1'">\printanswers</xsl:if>
 
     <xsl:text>&#10;&#10;\begin{document}</xsl:text>
 
