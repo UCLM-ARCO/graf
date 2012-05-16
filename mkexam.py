@@ -32,23 +32,23 @@ logging.info("graf dir: %s", ROOT)
 
 
 #generar en XML el examen solicitado para el alumno peticionario
-def generate_exam(examFname, exam_part, answers):
+def generate_exam(exam_fname, exam_part, answers):
 
     # FIXME: comprobar que existen estos campos
     styledoc = libxml2.parseFile(os.path.join(ROOT, 'xsl', 'exam_gen.xsl'))
     style = libxslt.parseStylesheetDoc(styledoc)
 
-    params = {}
-    params['rootdir'] = '"' + os.getcwd() + '/"'
-    params['part'] = '"%d"' % exam_part
+    params = dict(
+        rootdir = '"' + os.getcwd() + '/"',
+        part    = '"%d"' % exam_part)
 
     if answers:
         params['answers'] = '"1"'
 
     try:
-        doc = libxml2.parseFile(examFname)
+        doc = libxml2.parseFile(exam_fname)
     except libxml2.parserError, e:
-        logging.error("ERROR: Al parsear el fichero '%s'" % e)
+        logging.error("parsing file '%s'" % e)
 #        os.system('rxp -xs ' + path)
         sys.exit(2)
 
@@ -123,7 +123,11 @@ def main():
     if config.clean:
         logging.info("Cleaning previously generated files")
         os.system('rm -v *.tex *.aux *.log *.pdf *.out 2> /dev/null')
-    elif not config.exam:
+
+        if not config.exam:
+            return 0
+
+    if not config.exam:
         parser.print_help()
         return 1
 

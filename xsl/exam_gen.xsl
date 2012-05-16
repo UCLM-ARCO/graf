@@ -32,9 +32,6 @@
     </xsl:copy>
   </xsl:template>
 
-  <!--
-<xsl:template match="code"/>
--->
 
   <xsl:param name="rootdir"/>
   <xsl:param name="answers"/>
