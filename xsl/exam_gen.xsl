@@ -19,7 +19,7 @@
                        part|
                        item|item/@*|
                        number|number/@*|
-		       freetext|fretext/@*|
+		       freetext|freetext/@*|
                        extra|
                        text|p|ul|li|
                        em|b|tt|

@@ -12,8 +12,8 @@
 
   <question id="free-text">
     <p>Excribe un párrafo libre:</p>
-    <freetext rows="3">
-      Respuesta correcta (de 3 líneas supuestamente).
+    <freetext rows="8">
+      Respuesta correcta (de 8 líneas supuestamente).
     </freetext>
   </question>
 

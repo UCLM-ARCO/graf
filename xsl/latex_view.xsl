@@ -212,11 +212,15 @@
   </xsl:template>
 
   <xsl:template match="freetext">
+    <xsl:text>
     \vspace{0.1cm}
-    \arcoSolutionorbox{<xsl:value-of select="./@rows"/>}{
+    \arcoSolutionorbox{</xsl:text><xsl:value-of select="./@rows"/>
+    <xsl:text>}{</xsl:text>
     <xsl:apply-templates/>
+    <xsl:text>
     }
     \vspace{0.2cm}
+    </xsl:text>
   </xsl:template>
 
   <!-- elementos de formato -->
