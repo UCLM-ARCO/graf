@@ -154,7 +154,7 @@
 
   <xsl:template name="first-item">
     <xsl:if test="position()=1">
-      <xsl:text>\vspace{0.2cm}&#10;</xsl:text>
+      <xsl:text>\vspace{1mm plus 1mm}&#10;</xsl:text>
     </xsl:if>
   </xsl:template>
 
@@ -213,13 +213,13 @@
 
   <xsl:template match="freetext">
     <xsl:text>
-    \vspace{0.1cm}
+    \vspace{0.5mm plus 0.5mm}
     \arcoSolutionorbox{</xsl:text><xsl:value-of select="./@rows"/>
     <xsl:text>}{</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>
     }
-    \vspace{0.2cm}
+    \vspace{0.5mm plus 1.5mm minus 1.5mm}
     </xsl:text>
   </xsl:template>
 
@@ -287,7 +287,7 @@
     <xsl:value-of select="substring($date,1,4)"/>
   </xsl:template>
 
-  <xsl:template match="code">
+  <xsl:template match="listing">
     <xsl:text>{\fontsize{8pt}{8pt} \selectfont&#10;</xsl:text>
 <xsl:text>\begin{listing}[language=</xsl:text>
 <xsl:value-of select="@language"/>

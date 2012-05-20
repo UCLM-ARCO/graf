@@ -23,7 +23,7 @@
                        extra|
                        text|p|ul|li|
                        em|b|tt|
-		       code|code/@*|
+		       listing|listing/@*|
                        screen|
                        figure|figure/@*|
 		       answer">
