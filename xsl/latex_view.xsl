@@ -291,7 +291,7 @@
     <xsl:text>{\fontsize{8pt}{8pt} \selectfont&#10;</xsl:text>
 <xsl:text>\begin{listing}[language=</xsl:text>
 <xsl:value-of select="@language"/>
-<xsl:text>]</xsl:text>
+<xsl:text>]&#10;</xsl:text>
 <xsl:value-of select="."/>
 <xsl:text>\end{listing}  &#10;</xsl:text>
     <xsl:text>}</xsl:text>

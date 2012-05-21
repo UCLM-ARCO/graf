@@ -122,7 +122,7 @@ def main():
 
     if config.clean:
         logging.info("Cleaning previously generated files")
-        os.system('rm -v *.tex *.aux *.log *.pdf *.out 2> /dev/null')
+        os.system('rm -v *.tex *.aux *.log *.pdf *.out *~ 2> /dev/null')
 
         if not config.exam:
             return 0

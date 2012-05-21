@@ -107,7 +107,6 @@
   <xsl:template match="freetext">
     <xsl:copy-of select="."/>
   </xsl:template>
--->
 
   <xsl:template match="freecode">
     <xsl:element name="freetext">
@@ -115,5 +114,6 @@
       <xsl:copy-of select="answer"/>
     </xsl:element>
   </xsl:template>
+-->
 
 </xsl:stylesheet>
