@@ -122,6 +122,12 @@
   </xsl:template>
 
   <xsl:template match="question">
+    <xsl:if test="contains(@grade, '.')">
+      <xsl:message>
+      ERROR: Decimal grades are forbidden!!
+      </xsl:message>
+    </xsl:if>
+
     <xsl:text>&#10;\begin{arcoQuestion}{</xsl:text>
     <xsl:value-of select="@grade"/>
     <xsl:text>}&#10;    </xsl:text>
