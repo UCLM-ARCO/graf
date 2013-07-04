@@ -325,6 +325,10 @@
 \end{center}
   </xsl:template>
 
+  <xsl:template match="figurequestion">
+    \arcoFigureWithAnswer{<xsl:value-of select="@width"/>}{<xsl:value-of select="@question"/>}{<xsl:value-of select="@answer"/>}
+  </xsl:template>
+
   <xsl:template match="answer">
     <xsl:text>\arcoAnswer{</xsl:text>
     <xsl:apply-templates/>

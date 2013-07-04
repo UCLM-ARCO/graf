@@ -27,7 +27,7 @@ libxslt.registerExtModuleFunction(
     "file-exists", "http://arco.esi.uclm.es/commodity", f_exists)
 
 
-ROOT = os.path.dirname(__file__)
+ROOT = os.path.dirname(os.path.normpath(__file__))
 logging.info("graf dir: %s", ROOT)
 
 

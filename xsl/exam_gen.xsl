@@ -26,6 +26,7 @@
 		       listing|listing/@*|
                        screen|
                        figure|figure/@*|
+		       figurequestion|figurequestion/@*|
 		       answer">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
