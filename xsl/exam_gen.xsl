@@ -7,6 +7,7 @@
   xsl:exclude-result-prefixes="commodity">
 
 
+
   <xsl:output
     method = "xml"
     encoding = "iso-8859-1"
@@ -118,3 +119,9 @@
 -->
 
 </xsl:stylesheet>
+
+
+<!-- Local Variables: -->
+<!-- mode: xml -->
+<!-- fill-column: 90 -->
+<!-- End: -->

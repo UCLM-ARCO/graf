@@ -5,16 +5,19 @@ import os
 import sys
 import argparse
 import logging
+import random
 
 logging.getLogger().setLevel(logging.DEBUG)
 
 import libxml2
 import libxslt
 
+random.seed(os.getpid())
+
 
 def f_random(ctx):
-    return 0
-#    return str(random.randint(1,1000))
+    return str(random.randint(1,1000))
+#    return 0
 
 
 def f_exists(ctx, fname):
@@ -55,7 +58,7 @@ def generate_exam(exam_fname, exam_part, answers):
     result = style.applyStylesheet(doc, params)
     xmldoc = style.saveResultToString(result)
 
-#    print xmldoc
+#     print xmldoc
 
     style.freeStylesheet()
     doc.freeDoc()
