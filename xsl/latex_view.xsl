@@ -70,9 +70,10 @@
 		name()!='extra' and
 		name()!='part']"/>
 
-    <xsl:variable name="items" select="count(*[name()!='text'])"/>
+    <xsl:variable name="items" select="count(*[name()='item'])"/>
+    <xsl:variable name="multicolflag" select="count(*[name()='multicol'])"/>
 
-    <xsl:variable name="multicol" select="$items &gt; 6 or @multicol='yes'"/>
+    <xsl:variable name="multicol" select="$items &gt; 6 or @multicol='yes' or $multicolflag &gt; 0"/>
 
     <xsl:choose>
       <xsl:when test="$multicol">

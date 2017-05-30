@@ -18,6 +18,7 @@
   <!-- pass through -->
   <xsl:template match="instructions|instructions/*|identification|
                        part|
+		       multicol|
                        item|item/@*|
                        number|number/@*|
 		       freetext|freetext/@*|
