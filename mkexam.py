@@ -16,8 +16,7 @@ random.seed(os.getpid())
 
 
 def f_random(ctx):
-    return str(random.randint(1,1000))
-#    return 0
+    return str(random.randint(1, 1000))
 
 
 def f_exists(ctx, fname):
@@ -34,7 +33,7 @@ ROOT = os.path.dirname(os.path.normpath(__file__))
 logging.info("graf dir: %s", ROOT)
 
 
-#generar en XML el examen solicitado para el alumno peticionario
+# generar en XML el examen solicitado para el alumno peticionario
 def generate_exam(exam_fname, exam_part, answers):
 
     # FIXME: comprobar que existen estos campos
@@ -52,20 +51,17 @@ def generate_exam(exam_fname, exam_part, answers):
         doc = libxml2.parseFile(exam_fname)
     except libxml2.parserError, e:
         logging.error("parsing file '%s'" % e)
-#        os.system('rxp -xs ' + path)
         sys.exit(2)
 
     result = style.applyStylesheet(doc, params)
     xmldoc = style.saveResultToString(result)
 
-#     print xmldoc
-
     style.freeStylesheet()
     doc.freeDoc()
     result.freeDoc()
 
-    #FIXME: comprobar que la transformación fue correcta y generó el
-    #fichero 'target'
+    # FIXME: comprobar que la transformación fue correcta y generó el
+    # fichero 'target'
 
     return xmldoc
 
@@ -115,7 +111,7 @@ def string_before(cad, sub):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--answers', action='store_true',
-                        help='Generate solved exam')
+                         help='Generate solved exam')
     parser.add_argument('--clean', action='store_true',
                         help='remove generated files')
     parser.add_argument('exam', nargs='?',
@@ -138,7 +134,10 @@ def main():
         logging.error("ERROR: No existe el fichero '%s'" % config.exam)
         return 1
 
-    process_parts(config.exam, config.answers)
+    process_parts(config.exam, False)
+    if config.answers:
+        logging.info("Generating solution")
+        process_parts(config.exam, True)
 
 
 def process_parts(exam, answers):
@@ -153,6 +152,9 @@ def process_parts(exam, answers):
         fname = base
         if part:
             fname += '-%s' % part
+        if answers:
+            fname += '.solved'
+
         fname += '.tex'
 
         tex_filenames.append(fname)

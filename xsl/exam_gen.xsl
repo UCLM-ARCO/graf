@@ -29,7 +29,8 @@
                        screen|
                        figure|figure/@*|
 		       figurequestion|figurequestion/@*|
-		       answer">
+		       answer|
+		       placeholder">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
