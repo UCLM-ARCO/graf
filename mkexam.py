@@ -147,6 +147,9 @@ def process_parts(exam, answers):
     tex_filenames = []
     for p, part in enumerate(exam_parts):
         xml_exam = generate_exam(exam, p + 1, answers)
+        with file('temp', 'wt') as fd:
+            fd.write(xml_exam)
+
         latex_exam = generate_latex_view(xml_exam)
 
         fname = base

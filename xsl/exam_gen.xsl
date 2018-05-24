@@ -27,10 +27,13 @@
                        em|b|tt|
 		       listing|listing/@*|
                        screen|
+		       pre|
                        figure|figure/@*|
 		       figurequestion|figurequestion/@*|
 		       answer|
-		       placeholder">
+		       placeholder|
+		       subquestion|subquestion/@*|
+		       text()">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
@@ -56,6 +59,7 @@
       id=""
       from="{/exam/@from}"
       answers="{$answers}"
+      plain-question-counter="{count(/exam/plain-question-counter)}"
       >
 
       <xsl:if test="count(/exam/@show_points)">
@@ -72,20 +76,17 @@
         <xsl:value-of select="concat(/exam/@title, $part_name)"/>
       </xsl:attribute>
 
-      <xsl:attribute name="course">
-<!--
-	<xsl:value-of select="document(concat($rootdir, '/',$setcourse,'/','data.xml'))/subject/@name"/>
--->
-      <xsl:choose>
-        <xsl:when test="commodity:file-exists(concat($rootdir,'/','data.xml'))">
-          <xsl:value-of select="document(concat($rootdir,'/','data.xml'))/subject/@name"/>
-        </xsl:when>
-	<xsl:otherwise>
-	  <xsl:value-of select="/exam/subject/@name"/>
-	</xsl:otherwise>
-      </xsl:choose>
-
+      <xsl:attribute name="subject">
+	<xsl:choose>
+          <xsl:when test="commodity:file-exists(concat($rootdir,'/','data.xml'))">
+            <xsl:value-of select="document(concat($rootdir,'/','data.xml'))/subject/@name"/>
+          </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:value-of select="/exam/subject/@name"/>
+	  </xsl:otherwise>
+	</xsl:choose>
       </xsl:attribute>
+
       <xsl:apply-templates/>
     </exam_view>
   </xsl:template>
@@ -93,32 +94,49 @@
 
   <xsl:template match="question">
     <xsl:variable name="ref" select="@id"/>
-    <xsl:element name="question">
-      <xsl:attribute name="order">
-	<xsl:value-of select="commodity:random()"/>
-      </xsl:attribute>
-      <xsl:copy-of select="@*"/>
-      <xsl:copy-of select="document(concat($rootdir, ./@topic,'.xml'))/qset/question[@id=$ref]/@*"/>
-      <xsl:apply-templates select="document(concat($rootdir, ./@topic,'.xml'))/qset/question[@id=$ref]/*"/>
-    </xsl:element>
-  </xsl:template>
+    <xsl:variable name="topic" select="concat($rootdir, ./@topic,'.xml')"/>
 
+    <xsl:choose>
+      <xsl:when test="count(document($topic)/qset/question[@id=$ref]) = 1">
+	<xsl:element name="question">
+	  <xsl:call-template name="copy_question">
+	    <xsl:with-param name="question" select="document($topic)/qset/question[@id=$ref]"/>
+	  </xsl:call-template>
+	</xsl:element>
+      </xsl:when>
 <!--
-  <xsl:template match="item/@*">
-    <xsl:copy-of select="."/>
-  </xsl:template>
-
-  <xsl:template match="freetext">
-    <xsl:copy-of select="."/>
-  </xsl:template>
-
-  <xsl:template match="freecode">
-    <xsl:element name="freetext">
-      <xsl:copy-of select="@*"/>
-      <xsl:copy-of select="answer"/>
-    </xsl:element>
-  </xsl:template>
+      <xsl:when test="count(document($topic)/qset/multiquestion[@id=$ref]) = 1">
+	<xsl:element name="multiquestion">
+	  <xsl:call-template name="copy_question">
+	    <xsl:with-param name="question" select="document($topic)/qset/multiquestion[@id=$ref]"/>
+	  </xsl:call-template>
+	</xsl:element>
+	</xsl:when>
 -->
+      <xsl:otherwise>
+	<xsl:message terminate="yes">
+	  ERROR: The question <xsl:value-of select="concat(./@topic,'.xml:', $ref)"/> not exist or is duplicated.
+	</xsl:message>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="copy_question">
+    <xsl:param name="question"/>
+
+    <xsl:attribute name="order">
+      <xsl:value-of select="commodity:random()"/>
+    </xsl:attribute>
+    <xsl:copy-of select="@*"/>
+
+    <xsl:copy-of select="$question/@*"/>
+    <xsl:apply-templates select="$question/*"/>
+
+  </xsl:template>
+
+  <xsl:template match="text()">
+    <xsl:value-of select="normalize-space(.)"/>
+  </xsl:template>
 
 </xsl:stylesheet>
 
