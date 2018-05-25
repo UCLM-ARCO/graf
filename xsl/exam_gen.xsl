@@ -18,21 +18,21 @@
   <!-- pass through -->
   <xsl:template match="instructions|instructions/*|identification|
                        part|
-		       multicol|
                        item|item/@*|
                        number|number/@*|
 		       freetext|freetext/@*|
                        extra|
-                       text|p|ul|li|
+                       text|
+		       p|
+		       ul|li|enumerate|
                        em|b|tt|
-		       listing|listing/@*|
-                       screen|
-		       pre|
+		       listing|listing/@*|screen|pre|
                        figure|figure/@*|
 		       figurequestion|figurequestion/@*|
 		       answer|
 		       placeholder|
 		       subquestion|subquestion/@*|
+		       multicol|
 		       text()">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
@@ -134,9 +134,11 @@
 
   </xsl:template>
 
+<!--
   <xsl:template match="text()">
     <xsl:value-of select="normalize-space(.)"/>
   </xsl:template>
+-->
 
 </xsl:stylesheet>
 

@@ -72,7 +72,12 @@
   </xsl:template>
 
   <xsl:template name="render-question-statement">
-    <xsl:apply-templates select="p|ul|figure|figurequestion|pre|text()"/>
+    <xsl:apply-templates select="p|
+				 multicol|
+				 enumerate|ul|
+				 figure|figurequestion|
+				 listing|screen|pre|
+				 text()"/>
   </xsl:template>
 
   <xsl:template name="render-question-body">
@@ -176,16 +181,16 @@
 
   <xsl:template match="item">
     <xsl:call-template name="first-item"/>
-    <xsl:text>    \choice{</xsl:text>
+    <xsl:text>\choice{</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>\mbox{}}&#10;</xsl:text>
   </xsl:template>
 
   <xsl:template match="item[@answer]|item[@value]">
     <xsl:call-template name="first-item"/>
-    <xsl:text>    \correctChoice{</xsl:text>
+    <xsl:text>&#10;\correctChoice{</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>}&#10;</xsl:text>
+    <xsl:text>\mbox{}}&#10;</xsl:text>
   </xsl:template>
 
   <!-- FIXME: deprecated? -->
@@ -256,11 +261,16 @@
     <xsl:text>\end{itemize} </xsl:text>
   </xsl:template>
 
-  <xsl:template match="ul/li">
-    <xsl:text>\item </xsl:text>
+  <xsl:template match="enumerate">
+    <xsl:text>\begin{enumerate}[label=\alph*)]&#10;</xsl:text>
     <xsl:apply-templates/>
+    <xsl:text>\end{enumerate}</xsl:text>
   </xsl:template>
 
+  <xsl:template match="ul/li|enumerate/li">
+    <xsl:text>\item</xsl:text>
+    <xsl:apply-templates/>
+  </xsl:template>
 
   <xsl:template match="em">
     <xsl:text>\emph{</xsl:text>
@@ -321,29 +331,41 @@
   </xsl:template>
 
   <xsl:template match="listing">
-    <xsl:text>{\fontsize{8pt}{8pt} \selectfont&#10;</xsl:text>
+    <!--
+	<xsl:text>{\fontsize{8pt}{8pt} \selectfont&#10;</xsl:text>
+    -->
 <xsl:text>\begin{listing}[language=</xsl:text>
 <xsl:value-of select="@language"/>
 <xsl:text>]&#10;</xsl:text>
 <xsl:value-of select="."/>
-<xsl:text>\end{listing}  &#10;</xsl:text>
+<xsl:text>\end{listing}&#10;&#10;</xsl:text>
+<!--
     <xsl:text>}</xsl:text>
+-->
   </xsl:template>
 
   <xsl:template match="screen">
-    <xsl:text>{\fontsize{8pt}{8pt} \selectfont&#10;</xsl:text>
+    <!--
+	<xsl:text>{\fontsize{8pt}{8pt} \selectfont&#10;</xsl:text>
+    -->
 <xsl:text>\begin{console}</xsl:text>
 <xsl:value-of select="."/>
-<xsl:text>\end{console}  &#10;</xsl:text>
+<xsl:text>\end{console}&#10;&#10;</xsl:text>
+<!--
     <xsl:text>}</xsl:text>
+-->
   </xsl:template>
 
   <xsl:template match="pre">
-    <xsl:text>{\fontsize{8pt}{8pt} \selectfont&#10;</xsl:text>
-<xsl:text>\begin{listing}[style=pre]&#10;</xsl:text>
-<xsl:value-of select="."/>
-<xsl:text>\end{listing}  &#10;</xsl:text>
+    <!--
+	<xsl:text>{\fontsize{8pt}{8pt} \selectfont&#10;</xsl:text>
+    -->
+<xsl:text>&#10;\begin{listing}[style=pre]&#10;</xsl:text>
+<xsl:value-of select="substring-after(text(), '&#xa;')"/>
+<xsl:text>\end{listing}&#10;&#10;</xsl:text>
+<!--
     <xsl:text>}&#10;</xsl:text>
+-->
   </xsl:template>
 
 
@@ -377,5 +399,14 @@
   <xsl:template match="text()">
     <xsl:value-of select="normalize-space(.)"/>
   </xsl:template>
+
+  <xsl:template match="multicol">
+    <xsl:text>
+\begin{multicols}{2}
+</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>\end{multicols}&#10;</xsl:text>
+  </xsl:template>
+
 
 </xsl:stylesheet>
