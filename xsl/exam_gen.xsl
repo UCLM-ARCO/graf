@@ -21,8 +21,6 @@
                        item|item/@*|
                        number|number/@*|
 		       freetext|freetext/@*|
-                       extra|
-                       text|
 		       p|
 		       ul|li|enumerate|
                        em|b|tt|
@@ -32,7 +30,7 @@
 		       answer|
 		       placeholder|
 		       subquestion|subquestion/@*|
-		       multicol|
+		       multicol|multicol/@*|
 		       text()">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
@@ -58,6 +56,7 @@
     <exam_view
       id=""
       from="{/exam/@from}"
+      lang="{/exam/@lang}"
       answers="{$answers}"
       plain-question-counter="{count(/exam/plain-question-counter)}"
       >
@@ -104,15 +103,7 @@
 	  </xsl:call-template>
 	</xsl:element>
       </xsl:when>
-<!--
-      <xsl:when test="count(document($topic)/qset/multiquestion[@id=$ref]) = 1">
-	<xsl:element name="multiquestion">
-	  <xsl:call-template name="copy_question">
-	    <xsl:with-param name="question" select="document($topic)/qset/multiquestion[@id=$ref]"/>
-	  </xsl:call-template>
-	</xsl:element>
-	</xsl:when>
--->
+
       <xsl:otherwise>
 	<xsl:message terminate="yes">
 	  ERROR: The question <xsl:value-of select="concat(./@topic,'.xml:', $ref)"/> not exist or is duplicated.

@@ -15,7 +15,7 @@
 
   <xsl:template match="exam_view">
     <xsl:text>% -*- mode:utf-8 -*-
-\documentclass{arco-exam}
+\documentclass[</xsl:text><xsl:value-of select="@lang"/><xsl:text>]{arco-exam}
 
 \arcoTopic{</xsl:text><xsl:value-of select="@subject"/><xsl:text>}
 \arcoExamDesc{</xsl:text><xsl:value-of select="@title"/><xsl:text>}
@@ -36,9 +36,6 @@
     <xsl:if test="count(identification)">
       <xsl:text>&#10;\arcoExamStudentForm&#10;&#10;</xsl:text>
     </xsl:if>
-
-    <!-- FIXME: deprecated? -->
-    <xsl:apply-templates select="hline"/>
 
     <xsl:text>\begin{questions} &#10;</xsl:text>
     <xsl:apply-templates select="question"/>
@@ -73,7 +70,7 @@
 
   <xsl:template name="render-question-statement">
     <xsl:apply-templates select="p|
-				 multicol|
+				 multicol[not(child::item)]|
 				 enumerate|ul|
 				 figure|figurequestion|
 				 listing|screen|pre|
@@ -91,7 +88,7 @@
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:text>&#10;\vspace{4pt}</xsl:text>
+	<xsl:text>&#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
 
@@ -102,9 +99,7 @@
 	<xsl:text>\end{multicols}&#10;</xsl:text>
       </xsl:when>
        <xsl:otherwise>
-<!--
-	<xsl:text>\vspace{-7pt} &#10;</xsl:text>
--->
+	<xsl:text>\vspace{-5pt} &#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
 
@@ -115,17 +110,8 @@
       <xsl:text>\part&#10;</xsl:text>
     </xsl:if>
 
-<!--
-    <xsl:if test="name()='part' and position()!=1">
-      <xsl:text>&#10;</xsl:text>
-    </xsl:if>
--->
-
     <xsl:call-template name="question-body"/>
 
-    <xsl:apply-templates select="*[name()='extra']"/>
-
-<!--     <xsl:text>\mbox{} \\[0.3cm] </xsl:text> -->
   </xsl:template>
 
   <xsl:template match="question">
@@ -143,8 +129,7 @@
     <xsl:text>\end{simpleQuestion}&#10;</xsl:text>
   </xsl:template>
 
-  <!-- FIXME: rename "multiquestion" elements to "question" when is tested -->
-  <xsl:template match="multiquestion|question[subquestion]">
+  <xsl:template match="question[subquestion]">
     <xsl:text>&#10;\begin{multiQuestion}[</xsl:text>
     <xsl:value-of select="@grade"/>
     <xsl:text>]</xsl:text>
@@ -191,12 +176,6 @@
     <xsl:text>&#10;\correctChoice{</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>\mbox{}}&#10;</xsl:text>
-  </xsl:template>
-
-  <!-- FIXME: deprecated? -->
-  <xsl:template match="extra">
-    <xsl:text>\vspace{6pt}</xsl:text>
-    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="number">
@@ -246,8 +225,7 @@
   </xsl:template>
 
   <!-- format elements -->
-  <!-- FIXME: replace "text" by "p" -->
-  <xsl:template match="text|p">
+  <xsl:template match="p">
     <xsl:if test="position()!=1">
       <xsl:call-template name="par"/>
     </xsl:if>
@@ -268,7 +246,7 @@
   </xsl:template>
 
   <xsl:template match="ul/li|enumerate/li">
-    <xsl:text>\item</xsl:text>
+    <xsl:text>\item </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
@@ -331,49 +309,23 @@
   </xsl:template>
 
   <xsl:template match="listing">
-    <!--
-	<xsl:text>{\fontsize{8pt}{8pt} \selectfont&#10;</xsl:text>
-    -->
 <xsl:text>\begin{listing}[language=</xsl:text>
 <xsl:value-of select="@language"/>
 <xsl:text>]&#10;</xsl:text>
 <xsl:value-of select="."/>
 <xsl:text>\end{listing}&#10;&#10;</xsl:text>
-<!--
-    <xsl:text>}</xsl:text>
--->
   </xsl:template>
 
   <xsl:template match="screen">
-    <!--
-	<xsl:text>{\fontsize{8pt}{8pt} \selectfont&#10;</xsl:text>
-    -->
 <xsl:text>\begin{console}</xsl:text>
 <xsl:value-of select="."/>
 <xsl:text>\end{console}&#10;&#10;</xsl:text>
-<!--
-    <xsl:text>}</xsl:text>
--->
   </xsl:template>
 
   <xsl:template match="pre">
-    <!--
-	<xsl:text>{\fontsize{8pt}{8pt} \selectfont&#10;</xsl:text>
-    -->
 <xsl:text>&#10;\begin{listing}[style=pre]&#10;</xsl:text>
 <xsl:value-of select="substring-after(text(), '&#xa;')"/>
 <xsl:text>\end{listing}&#10;&#10;</xsl:text>
-<!--
-    <xsl:text>}&#10;</xsl:text>
--->
-  </xsl:template>
-
-
-  <xsl:template match="hline">
-    <xsl:text>
-    \hbox to \textwidth{\enspace\hrulefill}
-    \bigskip
-    </xsl:text>
   </xsl:template>
 
   <xsl:template match="figure">
@@ -393,7 +345,7 @@
   </xsl:template>
 
   <xsl:template match="placeholder">
-    <xsl:text>\_\_\_\_\_\_</xsl:text>
+    <xsl:text>~\_\_\_\_\_\_</xsl:text>
   </xsl:template>
 
   <xsl:template match="text()">
@@ -401,8 +353,17 @@
   </xsl:template>
 
   <xsl:template match="multicol">
+    <xsl:variable name="cols">
+      <xsl:choose>
+	<xsl:when test="@cols">
+	  <xsl:value-of select="@cols"/>
+	</xsl:when>
+	<xsl:otherwise>2</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
     <xsl:text>
-\begin{multicols}{2}
+\begin{multicols}{</xsl:text><xsl:value-of select="$cols"/><xsl:text>}
 </xsl:text>
     <xsl:apply-templates/>
     <xsl:text>\end{multicols}&#10;</xsl:text>
