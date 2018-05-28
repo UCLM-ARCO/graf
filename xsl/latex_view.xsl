@@ -214,14 +214,9 @@
 
   <xsl:template match="freetext">
     <xsl:text>
-    \vspace{0.5mm plus 0.5mm}
-    \arcoSolutionorbox{</xsl:text><xsl:value-of select="./@rows"/>
-    <xsl:text>}{</xsl:text>
+    \arcoSolutionorbox{</xsl:text><xsl:value-of select="./@rows"/><xsl:text>}{</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>
-    }
-    \vspace{0.5mm plus 1.5mm minus 1.5mm}
-    </xsl:text>
+    <xsl:text>}</xsl:text>
   </xsl:template>
 
   <!-- format elements -->
@@ -230,7 +225,7 @@
       <xsl:call-template name="par"/>
     </xsl:if>
     <xsl:apply-templates/>
-    <xsl:text>&#10;</xsl:text>
+    <xsl:text>&#10;&#10;</xsl:text>
   </xsl:template>
 
   <xsl:template match="ul">
@@ -339,7 +334,7 @@
   </xsl:template>
 
   <xsl:template match="answer">
-    <xsl:text>\arcoAnswer{</xsl:text>
+    <xsl:text> \arcoAnswer{</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>}</xsl:text>
   </xsl:template>

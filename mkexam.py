@@ -7,10 +7,12 @@ import argparse
 import logging
 import random
 
-logging.getLogger().setLevel(logging.DEBUG)
-
 import libxml2
 import libxslt
+
+from commodity.os_ import resolve_path
+logging.getLogger().setLevel(logging.DEBUG)
+
 
 random.seed(os.getpid())
 
@@ -28,16 +30,17 @@ libxslt.registerExtModuleFunction(
 libxslt.registerExtModuleFunction(
     "file-exists", "http://arco.esi.uclm.es/commodity", f_exists)
 
+XSL_DIR = resolve_path('xsl',
+                       ['/usr/lib/graf', os.path.dirname(os.path.normpath(__file__))])[0]
 
-ROOT = os.path.dirname(os.path.normpath(__file__))
-logging.info("graf dir: %s", ROOT)
+logging.info("graf xsl dir: %s", XSL_DIR)
 
 
 # generar en XML el examen solicitado para el alumno peticionario
 def generate_exam(exam_fname, exam_part, answers):
 
     # FIXME: comprobar que existen estos campos
-    styledoc = libxml2.parseFile(os.path.join(ROOT, 'xsl', 'exam_gen.xsl'))
+    styledoc = libxml2.parseFile(os.path.join(XSL_DIR, 'exam_gen.xsl'))
     style = libxslt.parseStylesheetDoc(styledoc)
 
     params = dict(
@@ -67,7 +70,7 @@ def generate_exam(exam_fname, exam_part, answers):
 
 
 def generate_latex_view(cad):
-    styledoc = libxml2.parseFile(os.path.join(ROOT, 'xsl', 'latex_view.xsl'))
+    styledoc = libxml2.parseFile(os.path.join(XSL_DIR, 'latex_view.xsl'))
     style = libxslt.parseStylesheetDoc(styledoc)
 
     doc = libxml2.parseMemory(cad, len(cad))

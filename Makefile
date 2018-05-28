@@ -1,18 +1,13 @@
+# -*- mode: makefile-gmake; coding: utf-8 -*-
+DESTDIR ?= ~
 
+all:
 
-S1: $(wildcard ./xsl/*) \
-	$(wildcard ./db/GNU/*) $(wildcard ./db/GNU/exam/*)
-	python exam_view-gen.py GNU $@ > a.xml
-	sabcmd xsl/exam_latex_view-gen.xsl a.xml exam.tex
-	pdflatex exam.tex
-	pdflatex exam.tex
+XSL_DIR=$(DESTDIR)/usr/lib/graf/xsl
 
-20040126: $(wildcard ./xsl/*) \
-	$(wildcard ./db/IPe/*) $(wildcard ./db/IPe/exam/*)
-	python exam_view-gen.py IPe $@ > a.xml
-	sabcmd xsl/exam_latex_view-gen.xsl a.xml exam.tex
-	pdflatex exam.tex
-	pdflatex exam.tex
-
-clean:
-	$(RM) *.tex *~ *.aux *.log *.pdf *.xml
+install:
+	install -vd $(DESTDIR)/usr/bin
+	install -v -m 555 mkexam.py $(DESTDIR)/usr/bin/mkexam
+	install -vd $(XSL_DIR)
+	install -v -m 666 xsl/exam_gen.xsl $(XSL_DIR)/
+	install -v -m 666 xsl/latex_view.xsl $(XSL_DIR)/
