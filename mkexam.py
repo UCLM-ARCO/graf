@@ -143,6 +143,9 @@ def main():
         process_parts(config.exam, True)
 
 
+LAST_TEX = 'last_tex'
+
+
 def process_parts(exam, answers):
     base = string_before(exam, '.')
     exam_parts = get_parts(exam)
@@ -164,6 +167,11 @@ def process_parts(exam, answers):
         fname += '.tex'
 
         tex_filenames.append(fname)
+
+        if os.path.exists(LAST_TEX):
+            os.remove(LAST_TEX)
+
+        os.symlink(fname, LAST_TEX)
 
         logging.info('rendering %s (%s)...', exam, part)
         with file(fname, 'wt') as fd:

@@ -7,6 +7,6 @@ Standards-Version: 3.9.8
 
 Package: graf
 Architecture: all
-Depends: ${misc:Depends}, python:any, python-commodity, arco-authors (>= 0.20180528)
+Depends: ${misc:Depends}, python:any, python-commodity, arco-authors (>= 0.20180611)
 Description: Graf XML to LaTeX/PDF compiler
  Graf XML to LaTeX/PDF compiler

@@ -121,7 +121,7 @@
 
     <xsl:text>&#10;\begin{simpleQuestion}[</xsl:text>
     <xsl:value-of select="@grade"/>
-    <xsl:text>]</xsl:text>
+    <xsl:text>]&#10;</xsl:text>
 
     <xsl:call-template name="render-question-statement"/>
     <xsl:call-template name="render-question-body"/>
@@ -152,6 +152,7 @@
 
   <xsl:template name="par">
     <xsl:text>&#10;</xsl:text>
+    <xsl:text>\vspace{2pt}</xsl:text>
   </xsl:template>
 
   <xsl:template match="option">
@@ -229,9 +230,9 @@
   </xsl:template>
 
   <xsl:template match="ul">
-    <xsl:text>\begin{itemize} </xsl:text>
+    <xsl:text>\begin{itemize}&#10;</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>\end{itemize} </xsl:text>
+    <xsl:text>\end{itemize}&#10;</xsl:text>
   </xsl:template>
 
   <xsl:template match="enumerate">
@@ -243,24 +244,25 @@
   <xsl:template match="ul/li|enumerate/li">
     <xsl:text>\item </xsl:text>
     <xsl:apply-templates/>
+    <xsl:text>&#10;</xsl:text>
   </xsl:template>
 
   <xsl:template match="em">
-    <xsl:text>\emph{</xsl:text>
+    <xsl:text> \emph{</xsl:text>
     <xsl:value-of select="."/>
-    <xsl:text>}</xsl:text>
+    <xsl:text>} </xsl:text>
   </xsl:template>
 
   <xsl:template match="b">
-    <xsl:text>\textbf{</xsl:text>
+    <xsl:text> \textbf{</xsl:text>
     <xsl:value-of select="."/>
-    <xsl:text>}</xsl:text>
+    <xsl:text>} </xsl:text>
   </xsl:template>
 
   <xsl:template match="tt">
-    <xsl:text>\texttt{</xsl:text>
+    <xsl:text> \texttt{</xsl:text>
     <xsl:value-of select="."/>
-    <xsl:text>}</xsl:text>
+    <xsl:text>} </xsl:text>
   </xsl:template>
 
 
@@ -307,13 +309,13 @@
 <xsl:text>\begin{listing}[language=</xsl:text>
 <xsl:value-of select="@language"/>
 <xsl:text>]&#10;</xsl:text>
-<xsl:value-of select="."/>
+<xsl:value-of select="substring-after(text(), '&#xa;')"/>
 <xsl:text>\end{listing}&#10;&#10;</xsl:text>
   </xsl:template>
 
   <xsl:template match="screen">
 <xsl:text>\begin{console}</xsl:text>
-<xsl:value-of select="."/>
+<xsl:value-of select="substring-after(text(), '&#xa;')"/>
 <xsl:text>\end{console}&#10;&#10;</xsl:text>
   </xsl:template>
 
