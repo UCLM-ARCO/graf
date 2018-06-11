@@ -25,10 +25,21 @@ def f_exists(ctx, fname):
     return os.path.exists(fname)
 
 
+def f_max_len(ctx, items):
+    print("MAX_LEN", items)
+    item0 = items[0]
+    print(dir(item0))
+    print(str(item0))
+    return "no"
+
+
 libxslt.registerExtModuleFunction(
     "random", "http://arco.esi.uclm.es/commodity", f_random)
 libxslt.registerExtModuleFunction(
     "file-exists", "http://arco.esi.uclm.es/commodity", f_exists)
+libxslt.registerExtModuleFunction(
+    "max-len", "http://arco.esi.uclm.es/commodity", f_max_len)
+
 
 XSL_DIR = resolve_path('xsl',
                        ['/usr/lib/graf', os.path.dirname(os.path.normpath(__file__))])[0]

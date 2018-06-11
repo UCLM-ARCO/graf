@@ -16,7 +16,7 @@
 
 
   <!-- pass through -->
-  <xsl:template match="instructions|instructions/*/*|identification|
+  <xsl:template match="instructions|instructions//*|identification|
                        part|
                        item|item/@*|
                        number|number/@*|

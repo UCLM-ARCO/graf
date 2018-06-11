@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?><!-- -*- XML -*- -->
 <xsl:stylesheet version="1.0"
-		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+		xmlns:commodity="http://arco.esi.uclm.es/commodity"
+		xsl:exclude-result-prefixes="commodity">
 
   <xsl:output
     method = "text"
@@ -16,6 +18,8 @@
   <xsl:template match="exam_view">
     <xsl:text>% -*- mode:utf-8 -*-
 \documentclass[</xsl:text><xsl:value-of select="@lang"/><xsl:text>]{arco-exam}
+
+\usepackage{inconsolata}
 
 \arcoTopic{</xsl:text><xsl:value-of select="@subject"/><xsl:text>}
 \arcoExamDesc{</xsl:text><xsl:value-of select="@title"/><xsl:text>}
@@ -77,9 +81,25 @@
 				 text()"/>
   </xsl:template>
 
+  
+  <xsl:template name="calc-longest-item">
+    <xsl:for-each select="item">
+      <xsl:sort select="string-length(.)" data-type="number" order="descending"/>
+      <xsl:if test="position() = 1">
+	<xsl:value-of select="string-length(normalize-space(.))"/>
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:template>
+  
+
   <xsl:template name="render-question-body">
+    <!--    
     <xsl:variable name="items" select="count(*[name()='item'])"/>
     <xsl:variable name="multicol" select="$items &gt; 6 or @multicol='yes'"/>
+    -->
+
+    <xsl:variable name="longest-item"><xsl:call-template name="calc-longest-item"/></xsl:variable>
+    <xsl:variable name="multicol" select="@multicol='yes' or $longest-item &lt; 42"/>
 
     <xsl:choose>
       <xsl:when test="$multicol">
@@ -248,21 +268,21 @@
   </xsl:template>
 
   <xsl:template match="em">
-    <xsl:text> \emph{</xsl:text>
+    <xsl:text>\emph{</xsl:text>
     <xsl:value-of select="."/>
-    <xsl:text>} </xsl:text>
+    <xsl:text>}</xsl:text>
   </xsl:template>
 
   <xsl:template match="b">
-    <xsl:text> \textbf{</xsl:text>
+    <xsl:text>\textbf{</xsl:text>
     <xsl:value-of select="."/>
-    <xsl:text>} </xsl:text>
+    <xsl:text>}</xsl:text>
   </xsl:template>
 
   <xsl:template match="tt">
-    <xsl:text> \texttt{</xsl:text>
+    <xsl:text>\texttt{</xsl:text>
     <xsl:value-of select="."/>
-    <xsl:text>} </xsl:text>
+    <xsl:text>}</xsl:text>
   </xsl:template>
 
 
@@ -345,9 +365,11 @@
     <xsl:text>~\_\_\_\_\_\_</xsl:text>
   </xsl:template>
 
+  <!--
   <xsl:template match="text()">
     <xsl:value-of select="normalize-space(.)"/>
   </xsl:template>
+  -->
 
   <xsl:template match="multicol">
     <xsl:variable name="cols">
