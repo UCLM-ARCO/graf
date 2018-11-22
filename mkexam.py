@@ -124,7 +124,7 @@ def string_before(cad, sub):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--answers', action='store_true',
+    parser.add_argument('-a', '--answers', action='store_true',
                          help='Generate solved exam')
     parser.add_argument('--clean', action='store_true',
                         help='remove generated files')
@@ -154,8 +154,7 @@ def main():
         process_parts(config.exam, True)
 
 
-LAST_TEX = 'last_tex'
-
+LAST_TEX = 'last.tex'
 
 def process_parts(exam, answers):
     base = string_before(exam, '.')
