@@ -81,7 +81,7 @@
 				 text()"/>
   </xsl:template>
 
-  
+
   <xsl:template name="calc-longest-item">
     <xsl:for-each select="item">
       <xsl:sort select="string-length(.)" data-type="number" order="descending"/>
@@ -90,21 +90,27 @@
       </xsl:if>
     </xsl:for-each>
   </xsl:template>
-  
+
 
   <xsl:template name="render-question-body">
-    <!--    
+    <!--
     <xsl:variable name="items" select="count(*[name()='item'])"/>
     <xsl:variable name="multicol" select="$items &gt; 6 or @multicol='yes'"/>
     -->
 
     <xsl:variable name="longest-item"><xsl:call-template name="calc-longest-item"/></xsl:variable>
-    <xsl:variable name="multicol" select="@multicol='yes' or $longest-item &lt; 42"/>
+    <xsl:variable name="multicol">
+      <xsl:choose>
+	<xsl:when test="$longest-item &lt; 13">4</xsl:when>
+	<xsl:when test="@multicol='yes' or $longest-item &lt; 42">2</xsl:when>
+	<xsl:otherwise></xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
 
     <xsl:choose>
-      <xsl:when test="$multicol">
+      <xsl:when test="$multicol != ''">
 	<xsl:text>
-\begin{multicols}{2}
+\begin{multicols}{</xsl:text><xsl:value-of select="$multicol"/><xsl:text>}
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
@@ -115,7 +121,7 @@
     <xsl:apply-templates select="item|freetext|text()"/>
 
     <xsl:choose>
-      <xsl:when test="$multicol">
+      <xsl:when test="$multicol != ''">
 	<xsl:text>\end{multicols}&#10;</xsl:text>
       </xsl:when>
        <xsl:otherwise>
@@ -187,16 +193,16 @@
 
   <xsl:template match="item">
     <xsl:call-template name="first-item"/>
-    <xsl:text>\choice{</xsl:text>
+    <xsl:text>\mbox{\choice{\mbox{}</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>\mbox{}}&#10;</xsl:text>
+    <xsl:text>}}&#10;</xsl:text>
   </xsl:template>
 
   <xsl:template match="item[@answer]|item[@value]">
     <xsl:call-template name="first-item"/>
-    <xsl:text>&#10;\correctChoice{</xsl:text>
+    <xsl:text>\mbox{\correctChoice{\mbox{}</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text>\mbox{}}&#10;</xsl:text>
+    <xsl:text>}}&#10;</xsl:text>
   </xsl:template>
 
   <xsl:template match="number">
