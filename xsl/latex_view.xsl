@@ -93,16 +93,11 @@
 
 
   <xsl:template name="render-question-body">
-    <!--
-    <xsl:variable name="items" select="count(*[name()='item'])"/>
-    <xsl:variable name="multicol" select="$items &gt; 6 or @multicol='yes'"/>
-    -->
-
     <xsl:variable name="longest-item"><xsl:call-template name="calc-longest-item"/></xsl:variable>
     <xsl:variable name="multicol">
       <xsl:choose>
-	<xsl:when test="$longest-item &lt; 13">4</xsl:when>
-	<xsl:when test="@multicol='yes' or $longest-item &lt; 42">2</xsl:when>
+	<xsl:when test="@multicol=4 or $longest-item &lt; 13">4</xsl:when>
+	<xsl:when test="@multicol='yes' or @multicol=2 or $longest-item &lt; 42">2</xsl:when>
 	<xsl:otherwise></xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
