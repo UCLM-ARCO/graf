@@ -341,7 +341,7 @@
   </xsl:template>
 
   <xsl:template match="pre">
-<xsl:text>&#10;\begin{listing}[style=pre]&#10;</xsl:text>
+<xsl:text>&#10;\begin{listing}[style=pre,numbers=none]&#10;</xsl:text>
 <xsl:value-of select="substring-after(text(), '&#xa;')"/>
 <xsl:text>\end{listing}&#10;&#10;</xsl:text>
   </xsl:template>
