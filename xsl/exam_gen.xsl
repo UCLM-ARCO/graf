@@ -103,10 +103,14 @@
 	  </xsl:call-template>
 	</xsl:element>
       </xsl:when>
-
+      <xsl:when test="count(document($topic)/qset/question[@id=$ref]) > 1">
+  <xsl:message terminate="yes">
+	  ERROR: The question <xsl:value-of select="concat(./@topic,'.xml:', $ref)"/> is duplicated.
+	</xsl:message>
+      </xsl:when>
       <xsl:otherwise>
 	<xsl:message terminate="yes">
-	  ERROR: The question <xsl:value-of select="concat(./@topic,'.xml:', $ref)"/> not exist or is duplicated.
+	  ERROR: The question <xsl:value-of select="concat(./@topic,'.xml:', $ref)"/> does not exist.
 	</xsl:message>
       </xsl:otherwise>
     </xsl:choose>
