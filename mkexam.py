@@ -10,10 +10,29 @@ import random
 import libxml2
 import libxslt
 
-from commodity.os_ import resolve_path
+
+def resolve_path(fname, paths, find_all=False):
+    '''
+    Search 'fname' in the given paths and return the first full path
+    that has the file. If 'find_all' is True it returns all matching paths.
+    It always returns a list.
+
+    >>> resolve_path('config', ['/home/user/brook', '/etc/brook'])
+    ['/etc/brook/config']
+    '''
+    retval = []
+    for p in paths:
+        path = os.path.join(p, fname)
+        if os.path.exists(path):
+            if not find_all:
+                return [path]
+
+            retval.append(path)
+
+    return retval
+
+
 logging.getLogger().setLevel(logging.DEBUG)
-
-
 random.seed(os.getpid())
 
 
@@ -63,7 +82,7 @@ def generate_exam(exam_fname, exam_part, answers):
 
     try:
         doc = libxml2.parseFile(exam_fname)
-    except libxml2.parserError, e:
+    except libxml2.parserError as e:
         logging.error("parsing file '%s'" % e)
         sys.exit(2)
 
@@ -190,7 +209,7 @@ def process_parts(exam, answers):
     for fname in tex_filenames:
         retval = os.system('MAIN=%s make -f /usr/include/arco/latex.mk' % fname)
         if retval:
-            print ' [== ERROR ==] '
+            print(' [== ERROR ==] ')
 
     logging.info('done')
 
