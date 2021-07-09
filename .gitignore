@@ -1,0 +1,4 @@
+debian/files
+debian/graf*
+debian/.debhelper
+.vscode/settings.json

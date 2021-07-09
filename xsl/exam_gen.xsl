@@ -27,7 +27,7 @@
 		       listing|listing/@*|screen|pre|
                        figure|figure/@*|
 		       figurequestion|figurequestion/@*|
-		       answer|
+           solution|
 		       placeholder|
 		       subquestion|subquestion/@*|
 		       multicol|multicol/@*|
@@ -39,7 +39,7 @@
 
 
   <xsl:param name="rootdir"/>
-  <xsl:param name="answers"/>
+  <xsl:param name="is_solution"/>
   <xsl:param name="part"/>
 
 
@@ -57,7 +57,7 @@
       id=""
       from="{/exam/@from}"
       lang="{/exam/@lang}"
-      answers="{$answers}"
+      is_solution="{$is_solution}"
       plain-question-counter="{count(/exam/plain-question-counter)}"
       >
 

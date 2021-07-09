@@ -26,7 +26,7 @@
 \arcoExamCourse{</xsl:text><xsl:call-template name="course"/> <xsl:text>}
 \arcoExamDate{</xsl:text><xsl:call-template name="date"/><xsl:text>}</xsl:text>
 
-    <xsl:if test="@answers='1'">\printanswers</xsl:if>
+    <xsl:if test="@is_solution='1'">\printanswers</xsl:if>
     <xsl:if test="@plain-question-counter='1'">\usePlainQuestionCounter</xsl:if>
 
     <xsl:text>&#10;&#10;\begin{document}</xsl:text>
@@ -73,12 +73,28 @@
   </xsl:template>
 
   <xsl:template name="render-question-statement">
-    <xsl:apply-templates select="p|
+    <xsl:choose>
+      <xsl:when test="
+      (count(freetext) or
+      count(solution) or
+      count(subquestion/freetext) or
+      count(subquestion/solution)) and
+      /exam_view/@is_solution='1' and
+      count(p) > 1">
+        <xsl:apply-templates select="p[1]"/>
+        <xsl:text>
+          {\bf[Este enunciado ha sido omitido parcialmente por falta de espacio. Consulte el examen para verlo completo.]}
+        </xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="p|
 				 multicol[not(child::item)]|
 				 enumerate|ul|
 				 figure|figurequestion|
 				 listing|screen|pre|
 				 text()"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 
@@ -104,26 +120,19 @@
 
     <xsl:choose>
       <xsl:when test="$multicol != ''">
-	<xsl:text>
+<xsl:text>
 \begin{multicols}{</xsl:text><xsl:value-of select="$multicol"/><xsl:text>}
 </xsl:text>
+    <xsl:apply-templates select="item"/>
+    <xsl:text>\end{multicols}&#10;</xsl:text>
+    <xsl:apply-templates select="freetext|solution|text()"/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:text>&#10;</xsl:text>
+<xsl:text>&#10;</xsl:text>
+    <xsl:apply-templates select="item|freetext|solution|text()"/>
+<xsl:text>\vspace{-5pt} &#10;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
-
-    <xsl:apply-templates select="item|freetext|text()"/>
-
-    <xsl:choose>
-      <xsl:when test="$multicol != ''">
-	<xsl:text>\end{multicols}&#10;</xsl:text>
-      </xsl:when>
-       <xsl:otherwise>
-	<xsl:text>\vspace{-5pt} &#10;</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-
   </xsl:template>
 
   <xsl:template match="part" name="part">
@@ -165,7 +174,7 @@
   </xsl:template>
 
   <xsl:template match="subquestion">
-    <xsl:text>&#10;\subQuestion</xsl:text>
+    <xsl:text>&#10;\subQuestion </xsl:text>
     <xsl:call-template name="render-question-statement"/>
     <xsl:call-template name="render-question-body"/>
   </xsl:template>
@@ -178,6 +187,10 @@
 
   <xsl:template match="option">
     <xsl:message>ERROR: El elemento "option" está obsoleto, use "item"</xsl:message>
+  </xsl:template>
+
+  <xsl:template match="@answer">
+    <xsl:message>ERROR: El atributo "answer" está obsoleto, use "value"</xsl:message>
   </xsl:template>
 
   <xsl:template name="first-item">
@@ -193,7 +206,7 @@
     <xsl:text>}}&#10;</xsl:text>
   </xsl:template>
 
-  <xsl:template match="item[@answer]|item[@value]">
+  <xsl:template match="item[@value]">
     <xsl:call-template name="first-item"/>
     <xsl:text>\mbox{\correctChoice{\mbox{}</xsl:text>
     <xsl:apply-templates/>
@@ -353,13 +366,15 @@
   </xsl:template>
 
   <xsl:template match="figurequestion">
-    \arcoFigureWithAnswer{<xsl:value-of select="@width"/>}{<xsl:value-of select="@question"/>}{<xsl:value-of select="@answer"/>}
+    \arcoFigureWithAnswer{<xsl:value-of select="@width"/>}{<xsl:value-of select="@question"/>}{<xsl:value-of select="@solution"/>}
   </xsl:template>
 
-  <xsl:template match="answer">
-    <xsl:text> \arcoAnswer{</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>}</xsl:text>
+  <xsl:template match="solution">
+    <xsl:if test="/exam_view/@is_solution=1">
+      <xsl:text>{\color{blue}\small </xsl:text>
+      <xsl:apply-templates/>
+      <xsl:text>}</xsl:text>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="placeholder">

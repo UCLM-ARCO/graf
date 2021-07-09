@@ -61,13 +61,13 @@ libxslt.registerExtModuleFunction(
 
 
 XSL_DIR = resolve_path('xsl',
-                       ['/usr/lib/graf', os.path.dirname(os.path.normpath(__file__))])[0]
+                       [os.path.dirname(os.path.normpath(__file__)), '/usr/lib/graf'])[0]
 
 logging.info("graf xsl dir: %s", XSL_DIR)
 
 
 # generar en XML el examen solicitado para el alumno peticionario
-def generate_exam(exam_fname, exam_part, answers):
+def generate_exam(exam_fname, exam_part, is_solution=False):
 
     # FIXME: comprobar que existen estos campos
     styledoc = libxml2.parseFile(os.path.join(XSL_DIR, 'exam_gen.xsl'))
@@ -77,8 +77,8 @@ def generate_exam(exam_fname, exam_part, answers):
         rootdir = '"' + os.getcwd() + '/"',
         part    = '"%d"' % exam_part)
 
-    if answers:
-        params['answers'] = '"1"'
+    if is_solution:
+        params['is_solution'] = '"1"'
 
     try:
         doc = libxml2.parseFile(exam_fname)
@@ -87,6 +87,7 @@ def generate_exam(exam_fname, exam_part, answers):
         sys.exit(2)
 
     result = style.applyStylesheet(doc, params)
+    # print(result)
     xmldoc = style.saveResultToString(result)
 
     style.freeStylesheet()
@@ -143,9 +144,9 @@ def string_before(cad, sub):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-a', '--answers', action='store_true',
+    parser.add_argument('-a', '-s', '--solution', action='store_true',
                          help='Generate solved exam')
-    parser.add_argument('--clean', action='store_true',
+    parser.add_argument('-c', '--clean', action='store_true',
                         help='remove generated files')
     parser.add_argument('exam', nargs='?',
                         help='your-file.exam.xml')
@@ -168,20 +169,20 @@ def main():
         return 1
 
     process_parts(config.exam, False)
-    if config.answers:
+    if config.solution:
         logging.info("Generating solution")
         process_parts(config.exam, True)
 
 
 LAST_TEX = 'last.tex'
 
-def process_parts(exam, answers):
+def process_parts(exam, is_solution):
     base = string_before(exam, '.')
     exam_parts = get_parts(exam)
 
     tex_filenames = []
     for p, part in enumerate(exam_parts):
-        xml_exam = generate_exam(exam, p + 1, answers)
+        xml_exam = generate_exam(exam, p + 1, is_solution)
         with file('temp', 'wt') as fd:
             fd.write(xml_exam)
 
@@ -190,7 +191,7 @@ def process_parts(exam, answers):
         fname = base
         if part:
             fname += '-%s' % part
-        if answers:
+        if is_solution:
             fname += '.solved'
 
         fname += '.tex'
