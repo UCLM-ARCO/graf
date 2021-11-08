@@ -186,7 +186,7 @@
   </xsl:template>
 
   <xsl:template match="option">
-    <xsl:message>ERROR: El elemento "option" está obsoleto, use "item"</xsl:message>
+    <xsl:message>ERROR: El elemento "option" estï¿½ obsoleto, use "item"</xsl:message>
   </xsl:template>
 
   <xsl:template match="@answer">
