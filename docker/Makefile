@@ -12,6 +12,9 @@ login:
 	@test ! -f "${GITHUB_TOKEN}" || (echo "ERROR: Need a token. See $${HOW_TO_LOGIN}"; false)
 	@cat ${GITHUB_TOKEN} | docker login ${HUB} -u ${GITHUB_USERNAME} --password-stdin
 
+image-uri:
+	@echo ${IMAGE}
+
 build:
 	docker build . -t ${NAME}
 
