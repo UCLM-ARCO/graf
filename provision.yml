@@ -1,0 +1,23 @@
+---
+- hosts: '*'
+  become: true
+  tasks:
+    - name: update apt
+      apt: update_cache=yes
+    - name: install gpg
+      apt: pkg=gpg
+
+    - name: add arco apt key
+      apt_key: keyserver=keyserver.ubuntu.com id=0x28380433 state=present
+    - name: add arco repo
+      apt_repository: repo='deb https://uclm-arco.github.io/debian/ sid main' state=present
+
+    - name: update apt
+      apt: update_cache=yes
+
+    - name: install depends
+      apt:
+        name: "{{ packages }}"
+      vars:
+        packages:
+        - graf
