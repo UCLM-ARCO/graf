@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8"?>
+<qset title="IPv4">
+
+  <question id="duplicated">
+    <p>Esta pregunta está duplicada</p>
+  </question>
+
+  <question id="duplicated">
+    <p>Esta pregunta está duplicada</p>
+  </question>
+
+  <question id="free-text">
+    <p>Primer párrafo del enunciado de la pregunta:</p>
+    <p>Segundo párrafo</p>
+    <ul>
+      <li>Otras</li>
+      <li>Cosas</li>
+    </ul>
+
+    <freetext rows="2">
+      Solución de la pregunta.
+    </freetext>
+  </question>
+
+  <question id="text-formating">
+    <p>Elementos de formato:</p>
+
+    <p>Una viñeta:</p>
+
+    <ul>
+      <li>Estilo <tt>monoespaciado</tt>.</li>
+      <li>Estilo <b>bold</b>.</li>
+      <li>Estilo <em>énfasis</em>.</li>
+    </ul>
+
+    <p>Un enumerado:</p>
+
+    <enumerate>
+      <li>1</li>
+      <li>Un hueco para rellenar: <placeholder/>.</li>
+      </enumerate>
+  </question>
+
+  <question id="auto-multicol-2-cols">
+    <p>
+      Las opciones de esta pregunta aparecen automáticamente a 2 columnas porque todas las
+      opciones tienen menos de 42 caracteres.
+    </p>
+
+    <item value="100"><tt>twenty tiny tigers take two taxis to town</tt></item>
+    <item>twenty tiny tigers take</item>
+    <item>twenty tiny tigers take two taxis to</item>
+    <item>twenty tiny tigers</item>
+    <solution>Esto explica porqué a) es la correcta, y aparece solo en la solución.</solution>
+  </question>
+
+  <question id="auto-multicol-false">
+    <p>
+      Las opciones de esta pregunta NO aparecen a 2 columnas porque hay una opción que
+      tiene más de 42 caracteres.
+    </p>
+
+    <item value="100">twenty tiny tigers take two taxis to town to town</item>
+    <item>twenty tiny tigers take two taxis</item>
+    <item>twenty tiny tigers take</item>
+    <item>twenty tiny tigers</item>
+    <solution>Esto explica porqué a) es la correcta, y aparece solo en la solución.</solution>
+  </question>
+
+  <question id="auto-multicol-4-cols">
+    <p>
+      Las opciones de esta pregunta aparecen a 4 columnas porque todas las opciones
+      tienes menos de 12 caracteres.
+    </p>
+
+    <item>123456789012</item>
+    <item value="100">tiny</item>
+    <item>tigers</item>
+    <item>take</item>
+    <solution>Esto explica porqué b) es la correcta, y aparece solo en la solución.</solution>
+  </question>
+
+  <question id="auto-multicol-2-not-4-cols">
+    <p>
+      Las opciones de esta pregunta aparecen a 2 columnas (y no a 4 columnas) porque hay
+      una opción que tiene más de 12 caracteres, pero menos de 42.
+    </p>
+
+    <item>1234567890123</item>
+    <item value="100">tiny</item>
+    <item>tigers</item>
+    <item>take</item>
+    <solution>Esto explica porqué b) es la correcta, y aparece solo en la solución.</solution>
+  </question>
+
+  <question id="multicol-force" multicol="yes">
+    <p>
+      Las opciones de esta pregunta aparecen a dos columnas a pesar de que hay opciones
+      con más de 42 caracteres porque <b>se fuerza</b> indicando el atributo <tt>multicol="yes"</tt>.
+    </p>
+
+    <item value="100">twenty tiny tigers take two taxis to town to town to town to town</item>
+    <item>twenty tiny tigers take two taxis</item>
+    <item>twenty tiny tigers take</item>
+    <item>twenty tiny tigers</item>
+  </question>
+
+  <question id="choices-wide">
+    <p>¿Cuáles son las capas que define el modelo hibrido? (respetando el orden)</p>
+    <item>host a red, enlace de datos, inter-red, transporte y aplicación, host a red,
+    enlace de datos, inter-red, transporte y aplicación. host a red, enlace de datos,
+    inter-red, transporte y aplicación.</item>
+    <item>física, enlace de datos, inter-red,  transporte y aplicación.</item>
+    <item>host a red, enlace de datos, inter-red, transporte y aplicación.</item>
+    <item value="100">Físico, enlace de datos, red, transporte y aplicación.</item>
+  </question>
+
+  <question id="figure-choices-multicol-pre">
+    <p>Dada la siguiente topología:</p>
+
+    <figure src="inter-net-2.png" width="1"/>
+
+    <subquestion>
+      <p>¿Cuál sería una la tabla de rutas de R2 para conseguir conectividad IP entre las redes N1, N2, N3 y N4?</p>
+
+      <pre>
+dst/mask     - next hop  - iface
+110.0.0.0/24 -   0.0.0.0 - e0
+130.0.0.0/24 -   0.0.0.0 - e1
+0.0.0.0  0   - 110.0.0.1 - e0
+	</pre>
+
+	<multicol>
+	<enumerate>
+	  <li>
+	<pre>
+dst/mask     - next hop  - iface
+120.0.0.0/24 -   0.0.0.0 - e1
+130.0.0.0/24 -   0.0.0.0 - e2
+140.0.0.0/24 -   0.0.0.0 - e3
+	</pre>
+	  </li>
+	  <li>
+	<pre>
+dst/mask     - next hop  - iface
+110.0.0.0/24 -   0.0.0.0 - e0
+130.0.0.0/24 -   0.0.0.0 - e2
+140.0.0.0/24 -   0.0.0.0 - e3
+	</pre>
+	  </li>
+	  <li>
+	<pre>
+dst/mask     - next hop  - iface
+110.0.0.0/24 -   0.0.0.0 - e0
+120.0.0.0/24 -   0.0.0.0 - e1
+140.0.0.0/24 -   0.0.0.0 - e3
+	</pre>
+	  </li>
+	  <li>
+	<pre>
+dst/mask     - next hop  - iface
+0.0.0.0  0   - 110.0.0.1 - e0
+	</pre>
+	  </li>
+
+	</enumerate>
+	</multicol>
+
+      <item value="100"></item>
+      <item></item>
+      <item></item>
+      <item></item>
+    </subquestion>
+  </question>
+
+  <question id="figurequestion-multi">
+    <p>
+      A partir de la topología que muestra la siguiente figura:
+    </p>
+    <figure width="0.50" src="sink-tree.png"/>
+
+    <subquestion>
+      <p>
+	Dibuja el árbol sumidero para A aplicando una métrica de
+	saltos. Si existe más de un camino con coste mínimo debe
+	elegirse el que tenga el primer vecino alfabéticamente menor.
+      </p>
+
+      <figurequestion width="0.50"
+		      question="sink-tree-nodes.png"
+		      solution="sink-tree-hops.png"/>
+    </subquestion>
+    <subquestion>
+      <p>
+	Dibuja el árbol sumidero para A aplicando una métrica de coste
+	de los enlaces. Si existe más de un camino con coste mínimo
+	debe elegirse el que tenga el primer vecino alfabéticamente
+	menor.
+      </p>
+      <figurequestion width="0.50"
+		      question="sink-tree-nodes.png"
+		      solution="sink-tree-links.png"/>
+    </subquestion>
+  </question>
+
+
+  <question id="figure-choice-multi">
+    <p>Dada la siguiente topología de red que conecta las redes N1, N2, N3, N4, N5 y N6
+    mediante los encaminadores R1-R6. El número de saltos para estaciones directamente
+    conectadas es 0. Asuma que las actualizaciones se reciben desde los enrutadores de
+    manera ordenada por el índice del enrutador (del 1 al 6). Responda a las siguientes
+    preguntas sobre el algoritmo de enrutamiento basado en vector de distancia.</p>
+    <figure width="0.7" src="fig-routing-1718.png"/>
+
+    <subquestion>
+      <p>Indique el vector de distancia inicial para los enrutadores R1, R3 y R6:</p>
+      <item value="100">R1=(N1,0,-;N2,0,-), R3=(N2,0,-;N3,0,-;N4,0,-), R6=(N1,0,-;N6,0,-)</item>
+      <item>R1=(R2,0,-;R6,0,-;R3,0,-), R3=(R1,0,-;R2,0,-;R4,0,-), R6=(R1,0,-;R2,0,-;R5,0,-)</item>
+      <item>R1=(N1,0,-), R30(N3,0,-), R6=(N6,0,-)</item>
+      <item>R1=(R2,0,-;R6,0,-;R3,0,-), R3=(R1,0,-;R2,0,-;R4,0,-), R6=(R1,0,-;R2,0,-;R5,0,-)</item>
+    </subquestion>
+    <subquestion>
+      <p>Indique el vector de distancia de R1 tras recibir las actualizaciones
+      correspondientes a las dos primeras iteraciones del protocolo:</p>
+      <item>R1=(N1,0,-;N2,0,-;N3,1,R2;N4,1,R3;N6,1,R6)</item>
+      <item value="100">R1=(N1,0,-;N2,0,-;N3,1,R2;N4,1,R3;N6,1,R6;N5,2,R3)</item>
+      <item>R1=(N1,0,-;N2,0,-;N3,1,R2;N4,1,R3;N6,1,R6;N5,2,R6)</item>
+      <item>R1=(N1,1,-;N2,1,-;N3,2,R2;N4,2,R3;N6,2,R6)</item>
+    </subquestion>
+    <subquestion>
+      <p>¿Cuántos pasos del protocolo se necesitan para la convergencia del protocolo?</p>
+      <item>1</item>
+      <item value="100">2</item>
+      <item>3</item>
+      <item>4</item>
+    </subquestion>
+    <subquestion>
+      <p>Tras la convergencia del protocolo, ¿a través de qué enrutador e interfaz
+      encamina R6 los paquetes destinados a la red N4?</p>
+      <item>R2, 20.0.0.2</item>
+      <item>R5, 70.0.0.1</item>
+      <item value="100">R1, 20.0.0.1</item>
+      <item>R6, 0.0.0.0</item>
+    </subquestion>
+  </question>
+
+
+  <question id="freetext-multi">
+    <p>Enunciado general de la multiquestion</p>
+
+    <subquestion>
+      <p>Enunciado de la primera subquestion</p>
+      <p>Segundo párrafo</p>
+      <ul>
+	<li>Otras</li>
+	<li>Cosas</li>
+      </ul>
+      <freetext rows="1">
+	Solución de respuesta libre (reservado 1 linea).
+      </freetext>
+    </subquestion>
+
+    <subquestion>
+      <p>Enunciado de la segunda subquestion</p>
+      <p>Segundo párrafo</p>
+      <ul>
+	<li>Otras</li>
+	<li>Cosas</li>
+      </ul>
+      <freetext>
+	Solución de respuesta libre (sin reserva de líneas).
+      </freetext>
+    </subquestion>
+
+
+  </question>
+
+  <question id="many-short-questions">
+    <p>A partir de la siguiente captura (abreviada) realizada con wireshark, contesta a las preguntas.</p>
+
+    <listing>
+Frame 1: 658 bytes on wire (5264 bits), 658 bytes captured (5264 bits) on interface 0
+Ethernet II, Src: Dell_fa:ba:da (98:90:96:fa:ba:da), Dst: Cisco_3a:c9:40 (00:64:40:3a:c9:40)
+Internet Protocol Version 4, Src: 192.168.1.12, Dst: 161.67.140.2
+Transmission Control Protocol, Src Port: 53878, Dst Port: 80, Seq: 1, Ack: 1, Len: 592
+Hypertext Transfer Protocol
+    GET / HTTP/1.1\r\n
+    Host: www.esi.uclm.es\r\n
+    User-Agent: Chrome/62.0.3202.89 Safari/537.36\r\n
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\r\n
+    Accept-Language: en-GB,en;q=0.9,es-ES;q=0.8,es;q=0.7,en-US;q=0.6\r\n
+    \r\n
+
+Frame 2: 481 bytes on wire (3848 bits), 481 bytes captured (3848 bits) on interface 0
+Ethernet II, Src: Cisco_3a:c9:40 (00:64:40:3a:c9:40), Dst: Dell_fa:ba:da (98:90:96:fa:ba:da)
+Internet Protocol Version 4, Src: 161.67.140.2, Dst: 192.168.1.12
+Transmission Control Protocol, Src Port: 80, Dst Port: 53878, Seq: 1, Ack: 593, Len: 415
+Hypertext Transfer Protocol
+    HTTP/1.1 200 OK\r\n
+    Date: Fri, 09 Mar 2018 11:58:03 GMT\r\n
+    Server: Apache/2.2.9 (Debian)\r\n
+    Content-Length: 119\r\n
+    Content-Type: text/html; charset=UTF-8\r\n
+    Content-Language: es\r\n
+    \r\n
+    [more]
+
+Frame 3: 690 bytes on wire (5520 bits), 690 bytes captured (5520 bits) on interface 0
+Ethernet II, Src: Dell_fa:ba:da (98:90:96:fa:ba:da), Dst: Cisco_3a:c9:40 (00:64:40:3a:c9:40)
+Internet Protocol Version 4, Src: 192.168.1.12, Dst: 161.67.140.47
+Transmission Control Protocol, Src Port: 45398, Dst Port: 80, Seq: 1888, Ack: 77781, Len: 624
+Hypertext Transfer Protocol
+    GET /img/btnSearchSubmit.jpg HTTP/1.1\r\n
+    Host: webpub.esi.uclm.es\r\n
+    User-Agent: Chrome/62.0.3202.89 Safari/537.36\r\n
+    Accept: image/webp,image/apng,image/*,*/*;q=0.8\r\n
+    Accept-Language: en-GB,en;q=0.9,es-ES;q=0.8,es;q=0.7,en-US;q=0.6\r\n
+    \r\n
+
+Frame 4: 1533 bytes on wire (12264 bits), 1533 bytes captured (12264 bits) on interface 0
+Ethernet II, Src: Cisco_3a:c9:40 (00:64:40:3a:c9:40), Dst: Dell_fa:ba:da (98:90:96:fa:ba:da)
+Internet Protocol Version 4, Src: 161.67.140.47, Dst: 192.168.1.12
+Transmission Control Protocol, Src Port: 80, Dst Port: 45398, Seq: 77781, Ack: 2512, Len: 1467
+Hypertext Transfer Protocol
+    HTTP/1.1 200 OK\r\n
+    Date: Fri, 09 Mar 2018 13:23:33 GMT\r\n
+    Server: Apache/2.2.9 (Debian)\r\n
+    Content-Length: 1006\r\n
+    Content-Type: image/jpeg\r\n
+    \r\n
+    [more]
+    </listing>
+
+    <enumerate>
+    <li>
+      Lista TODOS los protocolos que aparecen en la trama 1:
+      <solution>Ethernet, IP, TCP, y HTTP</solution>
+    </li>
+
+    <li>
+      ¿Sobre qué otro protocolo de transporte sería posible realizar esa petición?
+      <solution>Ninguno</solution>
+    </li>
+
+    <li>
+      Dirección IP de los computadores sobre los que se ejecutan los servidores:
+      <solution>161.67.140.2 y 161.67.140.47</solution>
+    </li>
+
+    <li>
+      ¿Cuál es el nombre comercial y versión del servidor de la primera petición?
+      <solution>Apache/2.2.9</solution>
+    </li>
+
+    <li>
+      <p>Dirección física del computador en el que se ejecuta el servidor de la primera petición: </p>
+      <solution>No se puede saber orque no es vecino (se encuentra en una red diferente).</solution>
+    </li>
+
+    <li>
+      Dirección IP del computador que ejecuta el cliente:
+      <solution>192.168.1.12</solution>
+    </li>
+
+    <li>
+      ¿Cuál es el nombre comercial y versión del cliente?
+      <solution>Chrome/62.0.3202.89</solution>
+    </li>
+
+    <li>
+      Dirección física del computador en el que se ejecuta el cliente:
+      <solution>98:90:96:fa:ba:da</solution>
+    </li>
+
+    <li>
+      <p>Lista de los recursos (URLs) solicitados por el cliente:</p>
+      <solution>http://www.esi.uclm.es/ y http://webpub.esi.uclm.es/img/btnSearchSubmit.jpg</solution>
+    </li>
+
+    <li>
+      ¿Cuál es el tamaño del cuerpo del mensaje de la segunda petición HTTP?
+      <solution>0</solution>
+    </li>
+
+    <li>
+      <p>¿Cuál es la razón más probable por la que se produce la petición del mensaje 3?</p>
+      <solution>Está solicitando una imagen cuya URL aparece en la página principal</solution>
+    </li>
+
+    <li>
+      <p>¿Por qué el cliente hace peticiones a 2 servidores?</p>
+      <solution>Porque la URL de la imagen corresponde a otro servidor.</solution>
+    </li>
+    </enumerate>
+
+  </question>
+
+
+</qset>

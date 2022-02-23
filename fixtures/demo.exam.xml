@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<exam title="GRAF demo" from="20180621" lang="english">
+  <subject name="[Nombre de asignatura]"/>
+  <plain-question-counter/>
+
+  <part name="">
+    <instructions>
+      Este test consta de <numquestions/> preguntas con un total de <numpoints/>
+      puntos. Cada 3 preguntas de test incorrectas restan 1 punto.  Sólo una opción es
+      correcta a menos que se indique algo distinto. No está permitido el uso de
+      calculadora.
+    </instructions>
+
+    <identification/>
+
+    <question grade="1" topic="q/fixtures" id="free-text"/>
+    <question grade="1" topic="q/fixtures" id="text-formating"/>
+    <question grade="1" topic="q/fixtures" id="auto-multicol-2-cols"/>
+    <question grade="1" topic="q/fixtures" id="auto-multicol-false"/>
+    <question grade="1" topic="q/fixtures" id="auto-multicol-4-cols"/>
+    <question grade="1" topic="q/fixtures" id="auto-multicol-2-not-4-cols"/>
+    <question grade="1" topic="q/fixtures" id="multicol-force"/>
+
+    <question grade="1" topic="q/fixtures" id="choices-wide"/>
+    <question grade="1" topic="q/fixtures" id="figure-choices-multicol-pre"/>
+    <question grade="6" topic="q/fixtures" id="figurequestion-multi"/>
+    <question grade="2" topic="q/fixtures" id="freetext-multi"/>
+    <question grade="6" topic="q/fixtures" id="figure-choice-multi"/>
+    <question grade="6" topic="q/fixtures" id="many-short-questions"/>
+
+  </part>
+</exam>

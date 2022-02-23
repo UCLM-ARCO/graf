@@ -2,3 +2,9 @@ debian/files
 debian/graf*
 debian/.debhelper
 .vscode/settings.json
+provision.yml~
+.vagrant
+fixtures/*.log
+fixtures/*.pdf
+fixtures/*.tex
+fixtures/temp
