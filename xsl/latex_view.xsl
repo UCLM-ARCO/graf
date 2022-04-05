@@ -182,15 +182,15 @@
 
   <xsl:template name="par">
     <xsl:text>&#10;</xsl:text>
-    <xsl:text>\vspace{2pt}</xsl:text>
+<!--     <xsl:text>\vspace{2pt}</xsl:text>  -->
   </xsl:template>
 
   <xsl:template match="option">
-    <xsl:message>ERROR: El elemento "option" estï¿½ obsoleto, use "item"</xsl:message>
+    <xsl:message>ERROR: El elemento "option" es obsoleto, use "item"</xsl:message>
   </xsl:template>
 
   <xsl:template match="@answer">
-    <xsl:message>ERROR: El atributo "answer" está obsoleto, use "value"</xsl:message>
+    <xsl:message>ERROR: El atributo "answer" es obsoleto, use "value"</xsl:message>
   </xsl:template>
 
   <xsl:template name="first-item">
